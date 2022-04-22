@@ -1,9 +1,11 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
-const mode = process.env.NODE_ENV || "development";
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+import * as webpack from 'webpack';
+import * as path from "path";
+import 'webpack-dev-server';
 
-module.exports = {
+const mode = (process.env.NODE_ENV || "development") as "development" | "none" | "production";
+
+const config: webpack.Configuration = {
   mode,
   devServer: {
     historyApiFallback: true,
@@ -55,3 +57,5 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
   ],
 };
+
+export default config;
