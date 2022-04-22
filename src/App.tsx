@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import PrivateRoute from "@routes/private";
 import PublicRoute from "@routes/public";
-import AdminRoute from "./routes/admin";
+import AdminRoute from "@routes/admin";
 
 import Spinner from "@atoms/spinner";
 import {

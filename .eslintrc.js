@@ -7,11 +7,13 @@ module.exports = {
     extends: [
         "airbnb-base",
         "airbnb-typescript/base",
-        "prettier"
+        "plugin:prettier/recommended"
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
         sourceType: "module",
         project: "./tsconfig.json"
+    },
+    rules: {
     }
 }
