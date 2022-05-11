@@ -14,10 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.3.4
-        with:
-          token: ${{ secrets.READ_ALL_REPO_PAT }}
-          submodules: recursive
+      - uses: actions/checkout@v3
 
       - name: Cache node modules
         uses: actions/cache@v3.0.2
