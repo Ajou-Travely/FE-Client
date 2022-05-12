@@ -17,7 +17,6 @@ const Content = () => {
 };
 
 const Main = () => {
-<<<<<<< HEAD
   return (
     <Container>
       <Banner>
@@ -27,9 +26,6 @@ const Main = () => {
       <Content />
     </Container>
   );
-=======
-  return <>Hi</>;
->>>>>>> 57302e7e10f2334840b1e0f7737382429d631f42
 };
 
 export default Main;
