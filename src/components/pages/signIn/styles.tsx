@@ -1,11 +1,19 @@
 import styled from "@emotion/styled";
 import { FlexDiv } from "@src/styles";
+import { theme } from "@src/styles/theme";
 
 const Container = styled(FlexDiv)`
-  width: 100%;
-  height: 100%;
   justify-content: center;
+`;
+
+const ContentContainer = styled(FlexDiv)`
+  position: absolute;
+  margin: 2vw;
+  padding: 4vw;
   align-items: center;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 6px ${theme.colors.shadow};
 `;
 
 const LoginForm = styled.form`
@@ -23,4 +31,4 @@ const Wrapper = styled(FlexDiv)`
   }
 `;
 
-export { Container, LoginForm, Wrapper };
+export { Container, ContentContainer, LoginForm, Wrapper };
