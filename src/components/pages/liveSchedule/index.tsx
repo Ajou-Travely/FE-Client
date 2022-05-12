@@ -1,6 +1,6 @@
 import socket from "@utils/socket";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useLayoutEffect, useState } from "react";
 import { Container, Empty } from "./styles";
 import DashBoard from "@organisms/dashBoard";
 
@@ -15,6 +15,7 @@ const LiveSchedule = () => {
   const [roomCode, setRoomCode] = useState("");
   const [focusMark, setFocusMark] = useState({ x: 33.450701, y: 126.570667 });
   const navigate = useNavigate();
+
   // const handleLeaveRoom = () => {
   //   socket.emit("LEAVE_ROOM", roomCode, ({ status, message }: SocketProps) => {
   //     console.log(message);
