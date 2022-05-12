@@ -17,7 +17,7 @@ const config: webpack.Configuration = {
   },
 
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"],
+    extensions: [".js", ".ts", ".tsx"],
     alias: {
       "@src": path.resolve(__dirname, "src"),
       "@atoms": path.resolve(__dirname, "src/components/atoms"),
@@ -48,10 +48,14 @@ const config: webpack.Configuration = {
   },
 
   plugins: [
+    new webpack.DefinePlugin({
+      "process.env": JSON.stringify(process.env),
+    }),
     new webpack.ProvidePlugin({
       React: "react",
     }),
     new HtmlWebpackPlugin({
+      publicPath: "/",
       template: "./public/index.html",
     }),
     new webpack.HotModuleReplacementPlugin(),

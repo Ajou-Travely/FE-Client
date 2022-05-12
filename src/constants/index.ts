@@ -1,3 +1,5 @@
+import { CLIENT_TARGET_URL } from "@utils/api";
+
 // url
 export const MAIN_URL = "/";
 
@@ -9,7 +11,15 @@ export const MYPAGE_URL = "/myPage";
 
 export const ADMIN_URL = "/admin";
 
+export const KAKAO_CALLBACK_URL = "/oauth/kakao/callback";
+
 export const ERROR_MESSAGE = "올바른 작성이 필요합니다.";
+
+const REDIRECT_URI = `${CLIENT_TARGET_URL}/oauth/kakao/callback`;
+
+export const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+export const DAY = ["월", "화", "수", "목", "금", "토", "일"];
 
 export const SIGNIN_INPUT_DATA = {
   id: {
