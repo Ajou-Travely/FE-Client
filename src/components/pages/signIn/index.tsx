@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
-import { Container, LoginForm, Wrapper } from "./styles";
+import { Container, ContentContainer, LoginForm, Wrapper } from "./styles";
 
 import Button from "@atoms/button";
 import KakaoBtn from "@atoms/button/kakao";
@@ -39,20 +38,22 @@ const SignIn = () => {
   };
 
   return (
-    <Container direction="column">
-      <h1>로그인</h1>
-      <LoginForm onSubmit={handleSubmit(onSubmit)}>
-        <SignInInput {...inputProps("id")} />
-        <SignInInput {...inputProps("password")} />
-        <Wrapper direction="row" style={{ columnGap: "1rem" }}>
-          <p onClick={() => navigate("/find")}>아이디/비밀번호 찾기</p>
-          <p onClick={() => navigate("/signUp")}>회원가입</p>
-        </Wrapper>
-        <Wrapper direction="column" style={{ rowGap: "1rem" }}>
-          <Button>버튼</Button>
-          <KakaoBtn onClick={() => (window.location.href = KAKAO_AUTH_URL)} />
-        </Wrapper>
-      </LoginForm>
+    <Container direction="row">
+      <ContentContainer direction="column">
+        <h1>로그인</h1>
+        <LoginForm onSubmit={handleSubmit(onSubmit)}>
+          <SignInInput {...inputProps("id")} />
+          <SignInInput {...inputProps("password")} />
+          <Wrapper direction="row" style={{ columnGap: "1rem" }}>
+            <p onClick={() => navigate("/find")}>아이디/비밀번호 찾기</p>
+            <p onClick={() => navigate("/signUp")}>회원가입</p>
+          </Wrapper>
+          <Wrapper direction="column" style={{ rowGap: "1rem" }}>
+            <Button>버튼</Button>
+            <KakaoBtn onClick={() => (window.location.href = KAKAO_AUTH_URL)} />
+          </Wrapper>
+        </LoginForm>
+      </ContentContainer>
     </Container>
   );
 };

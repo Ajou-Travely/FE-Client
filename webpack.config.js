@@ -18,7 +18,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"],
+    extensions: [".js", ".ts", ".tsx"],
     alias: {
       "@src": path.resolve(__dirname, "src"),
       "@atoms": path.resolve(__dirname, "src/components/atoms"),
