@@ -1,12 +1,11 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack");
-const dotenv = require("dotenv");
-const mode = process.env.NODE_ENV || "development";
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+import * as webpack from 'webpack';
+import * as path from "path";
+import 'webpack-dev-server';
 
-dotenv.config();
+const mode = (process.env.NODE_ENV || "development") as "development" | "none" | "production";
 
-module.exports = {
+const config: webpack.Configuration = {
   mode,
   devServer: {
     historyApiFallback: true,
@@ -35,7 +34,10 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: ["babel-loader", "ts-loader"],
+        use: [
+          "babel-loader",
+          "ts-loader"
+        ],
       },
     ],
   },
@@ -59,3 +61,5 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
   ],
 };
+
+export default config;
