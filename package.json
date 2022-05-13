@@ -12,6 +12,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@reduxjs/toolkit": "^1.8.1",
     "@types/js-cookie": "^3.0.1",
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
