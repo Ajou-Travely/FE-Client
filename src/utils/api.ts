@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const SERVER_TARGET_URL = "api." + window.location.host;
-
+// export const SERVER_TARGET_URL = "api." + window.location.host;
+export const SERVER_TARGET_URL = "http://192.168.29.247:8080";
 export const Api = axios.create({
   baseURL: SERVER_TARGET_URL || "",
 });
