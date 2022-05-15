@@ -59,15 +59,21 @@ function App() {
             font-family: "Spoqa Han Sans Neo", "Spoqa Han Sans JP", sans-serif;
           }
 
+          *,
+          *::before,
+          *::after {
+            box-sizing: border-box;
+          }
+
           body {
-            background: #f8f8f8;
+            background: #fcfcfd;
           }
         `}
       />
       <QueryClientProvider client={queryClient}>
         <Suspense fallback={<Spinner />}>
           <Router>
-             <Navigation />
+            <Navigation />
             <Routes>
               <Route
                 path={KAKAO_CALLBACK_URL}
