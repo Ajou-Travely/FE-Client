@@ -13,7 +13,7 @@ export const createTravel = async ({
   title,
   userEmails,
 }: createProps) =>
-  await Api.post(`/v1/travels?userId=1`, {
+  await Api.post(`/v1/travels`, {
     endDate,
     startDate,
     title,
