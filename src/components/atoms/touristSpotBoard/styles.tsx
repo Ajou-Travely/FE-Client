@@ -9,6 +9,9 @@ const Container = styled.div`
   align-items: center;
   display: flex;
   justify-content: space-between;
+  * {
+    margin: 0px;
+  }
 `;
 
 export { Container };

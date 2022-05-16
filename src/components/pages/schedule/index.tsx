@@ -1,12 +1,13 @@
 import Button from "@src/components/atoms/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container, ScheduleWrapper, ScheduleElementContainer } from "./styles";
 
 const data = { address: "충청도", people: 4 };
 
 const ScheduleElement = ({ address, people }: typeof data) => {
+  const navigate = useNavigate();
   return (
-    <ScheduleElementContainer>
+    <ScheduleElementContainer onClick={() => navigate("/liveSchedule")}>
       <p>장소 : {address}</p>
       <p>인원 : {people}</p>
     </ScheduleElementContainer>
