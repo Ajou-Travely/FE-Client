@@ -11,6 +11,7 @@ import {
   ERROR_MESSAGE,
   KAKAO_AUTH_URL,
 } from "@constants/index";
+import { Api } from "@src/utils/api";
 
 interface SignInFormInterface {
   id: string;
@@ -36,6 +37,11 @@ const SignIn = () => {
       ...{ error: errors[type]?.message },
     };
   };
+
+  // const handleTest = async () => {
+  //   const data = await Api.get("/api/v1/test");
+  //   console.log(data);
+  // };
 
   return (
     <Container direction="row">
