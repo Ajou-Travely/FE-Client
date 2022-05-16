@@ -29,14 +29,19 @@ const NewSchedule = () => {
 
   const handleEmptyTitle = countChip === 1 ? title !== "" : true;
 
+  const setDateFormat = (date: Date) =>
+    `${date.getFullYear()}-${
+      date.getMonth() < 10 ? "0" : ""
+    }${date.getMonth()}-${date.getDate() < 10 ? "0" : ""}${date.getDate()}`;
+
   const handleNext = () =>
     handleEmptyTitle && setCountChip(Math.min(2, countChip + 1));
   const goNextPage = async () => {
     const [startDate, endDate] = selectedDate;
 
     const { status } = await createTravel({
-      startDate,
-      endDate,
+      startDate: setDateFormat(startDate),
+      endDate: setDateFormat(endDate),
       title,
       userEmails: userList,
     });
