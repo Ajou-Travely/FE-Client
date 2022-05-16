@@ -31,14 +31,20 @@ const NewSchedule = () => {
 
   const handleNext = () =>
     handleEmptyTitle && setCountChip(Math.min(2, countChip + 1));
-  const goNextPage = () => {
+  const goNextPage = async () => {
     const [startDate, endDate] = selectedDate;
 
-    createTravel({ startDate, endDate, title, userId: 1 });
-    navigate("/liveSchedule");
+    const { status } = await createTravel({
+      startDate,
+      endDate,
+      title,
+      userEmails: userList,
+    });
+    if (status === undefined) navigate("/liveSchedule");
   };
 
   useEffect(() => {
+    if (!params) return;
     setSelectedDate([params?.dayStart, params?.dayEnd]);
     setCountChip(2);
     setTitle(params?.title);
