@@ -1,4 +1,6 @@
 import { jsx, css } from "@emotion/react";
+import Cookies from "js-cookie";
+
 import Board from "@organisms/board";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -210,8 +212,16 @@ const Content = () => {
 //   );
 // };
 
-const Main = () => {
+interface Props {
+  setUser: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Main = ({ setUser }: Props) => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setUser(!!Cookies.get("SESSION"));
+  }, []);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();

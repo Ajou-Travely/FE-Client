@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThemeProvider, Global, css } from "@emotion/react";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -37,6 +37,7 @@ const Temp = lazy(() => import("@pages/temp"));
 
 function App() {
   const queryClient = new QueryClient();
+  const [user, setUser] = useState(false);
   const preventClose = (e: BeforeUnloadEvent) => {
     e.preventDefault();
     e.returnValue = "";
@@ -74,7 +75,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Suspense fallback={<Spinner />}>
           <Router>
-            <Navigation />
+            <Navigation user={user} />
             <Routes>
               <Route
                 path={KAKAO_CALLBACK_URL}
@@ -83,7 +84,7 @@ function App() {
               <Route
                 path={MYPAGE_URL}
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute user={user}>
                     <MyPage />
                   </PrivateRoute>
                 }
@@ -92,7 +93,7 @@ function App() {
                 path={MAIN_URL}
                 element={
                   <PublicRoute>
-                    <Main />
+                    <Main setUser={setUser} />
                   </PublicRoute>
                 }
               />
@@ -115,7 +116,7 @@ function App() {
               <Route
                 path={"/schedule"}
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute user={user}>
                     <Schedule />
                   </PrivateRoute>
                 }
@@ -123,7 +124,7 @@ function App() {
               <Route
                 path="/settlement"
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute user={user}>
                     <Settlement />
                   </PrivateRoute>
                 }
@@ -131,7 +132,7 @@ function App() {
               <Route
                 path={"/newSchedule"}
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute user={user}>
                     <NewSchedule />
                   </PrivateRoute>
                 }
@@ -139,7 +140,7 @@ function App() {
               <Route
                 path={"/liveSchedule"}
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute user={user}>
                     <LiveSchedule />
                   </PrivateRoute>
                 }
