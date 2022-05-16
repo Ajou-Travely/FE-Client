@@ -8,7 +8,7 @@ const OAuth2RedirectHandler = () => {
   const navigate = useNavigate();
   const { isLoading, error, data } = useQuery("oauth", () => {
     let code = new URL(window.location.href).searchParams.get("code");
-    return Api.get(`/api/v1/oauth2/authorization/kakao?code=${code}`, {
+    return Api.get(`/v1/oauth2/authorization/kakao?code=${code}`, {
       withCredentials: true,
     });
   });
