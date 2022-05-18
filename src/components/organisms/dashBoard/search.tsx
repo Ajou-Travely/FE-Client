@@ -3,20 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Wrapper, SearchContainer, SearchItem } from "./styles";
 
 interface Props {
-  kakao: any;
   map: any;
   setMarkers: React.Dispatch<React.SetStateAction<any[]>>;
   deleteMarker: Function;
   changeRecommandPage: () => void;
 }
 
-const SearchBoard = ({
-  kakao,
+const SearchBoard: React.FC<Props> = ({
   map,
   changeRecommandPage,
   deleteMarker,
   setMarkers,
-}: Props) => {
+}) => {
   const InputRef = useRef<HTMLInputElement>();
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [selectItem, setSelectItem] = useState<any>({});
@@ -25,9 +23,9 @@ const SearchBoard = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (kakao && kakao.maps) {
-      console.log(kakao.maps);
-      setPs(new kakao.maps.services.Places());
+    if (map) {
+      console.log(map);
+      setPs(new map.services.Places());
     }
   }, [kakao]);
 
