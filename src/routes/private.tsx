@@ -4,9 +4,10 @@ import isLogin from "@utils/isLogin";
 
 interface Props {
   children: ReactElement;
+  user: boolean;
 }
 
-const PrivateRoute = ({ children: Component }: Props) => {
-  return true ? Component : <Navigate to="/signIn" />;
+const PrivateRoute = ({ user, children: Component }: Props) => {
+  return isLogin() ? Component : <Navigate to="/signIn" />;
 };
 export default PrivateRoute;

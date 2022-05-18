@@ -4,6 +4,8 @@ import { FlexDiv } from "@src/styles";
 import { Container, SignFormStyle, ErrorMessage } from "./styles";
 import { SIGNUP_INPUT_DATA, CHECK_SIGNUP_DATA } from "@constants/index";
 import Button from "@atoms/button";
+import { Api } from "@src/utils/api";
+import { useNavigate } from "react-router-dom";
 
 interface SignUpFormInterface {
   name: string;
@@ -18,13 +20,13 @@ interface SignUpFormInterface {
   password: string;
 }
 
-const SignUpForm = () => {
+const SignUpForm = ({ kakaoId }: { kakaoId: string }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<SignUpFormInterface>({});
-
+  const navigate = useNavigate();
   const inputProps = (type: keyof SignUpFormInterface) => {
     return {
       ...register(type, CHECK_SIGNUP_DATA[type]),
@@ -33,9 +35,17 @@ const SignUpForm = () => {
     };
   };
 
-  const onSubmit = (data: SignUpFormInterface) => {
-    const { year, month, day, ...rest } = data;
-    console.log({ birth: `${year}-${month}-${day}`, ...rest });
+  const onSubmit = async (data: SignUpFormInterface) => {
+    const { year, month, day, email, name, phoneNumber } = data;
+    // console.log({ birth: `${year}-${month}-${day}`, ...rest });
+    const { status } = await Api.post("/v1/users/signup", {
+      email,
+      kakaoId,
+      name,
+      phoneNumber,
+      userType: "USER",
+    });
+    if (status === undefined) navigate("/signIn");
   };
 
   const BirthInputForm = () => {

@@ -2,20 +2,20 @@ import { Api } from "../api";
 
 interface createProps {
   title: string;
-  userId: number;
-  startDate: Date;
-  endDate: Date;
+  userEmails: string[];
+  startDate: string;
+  endDate: string;
 }
 
 export const createTravel = async ({
   startDate,
   endDate,
   title,
-  userId,
+  userEmails,
 }: createProps) =>
-  await Api.post(`/api/v1/travels?userId=1`, {
+  await Api.post(`/v1/travels`, {
     endDate,
     startDate,
     title,
-    userId,
+    userEmails,
   });

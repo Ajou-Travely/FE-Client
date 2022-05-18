@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Button from "@atoms/button";
 import Chip from "@atoms/chip";
@@ -13,6 +13,7 @@ import { Container, ChipWrapper, FormWrapper } from "./styles";
 import { createTravel } from "@src/utils/api/travel";
 
 const NewSchedule = () => {
+  const params = useLocation().state as any;
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date[]>([
     new Date(),
@@ -20,19 +21,40 @@ const NewSchedule = () => {
   ]);
   const [countChip, setCountChip] = useState(0);
   const [title, setTitle] = useState("");
+  const [userList, setUserList] = useState<string[]>([]);
+
+  const addUserEmail = (email) => setUserList((v) => [...v, email]);
 
   const handlePast = () => setCountChip(Math.max(0, countChip - 1));
 
   const handleEmptyTitle = countChip === 1 ? title !== "" : true;
 
+  const setDateFormat = (date: Date) =>
+    `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? "0" : ""}${
+      date.getMonth() + 1
+    }-${date.getDate() < 10 ? "0" : ""}${date.getDate()}`;
+
   const handleNext = () =>
     handleEmptyTitle && setCountChip(Math.min(2, countChip + 1));
-  const goNextPage = () => {
+  const goNextPage = async () => {
     const [startDate, endDate] = selectedDate;
 
-    createTravel({ startDate, endDate, title, userId: 1 });
-    navigate("/liveSchedule");
+    const { status } = await createTravel({
+      startDate: setDateFormat(startDate),
+      endDate: setDateFormat(endDate),
+      title,
+      userEmails: userList,
+    });
+    if (status === undefined) navigate("/liveSchedule");
   };
+
+  useEffect(() => {
+    if (!params) return;
+    setSelectedDate([params?.dayStart, params?.dayEnd]);
+    setCountChip(2);
+    setTitle(params?.title);
+  }, [params]);
+
   return (
     <Container direction="column">
       <h2>새 여행 생성</h2>
@@ -49,7 +71,9 @@ const NewSchedule = () => {
           />
         )}
         {countChip === 1 && <SelectTitle title={title} setTitle={setTitle} />}
-        {countChip === 2 && <AddParty />}
+        {countChip === 2 && (
+          <AddParty userList={userList} addUserEmail={addUserEmail} />
+        )}
       </FormWrapper>
       <FlexDiv direction="row">
         {countChip !== 0 && <Button onClick={handlePast}>이전</Button>}
