@@ -1,6 +1,6 @@
 import socket from "@utils/socket";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useKakaoInit from "@src/utils/libs/useKakaoInit";
 import DashBoard from "@organisms/dashBoard";
 import InnerDashBoard from "@organisms/dashBoard/inner";
@@ -79,6 +79,22 @@ const LiveSchedule = () => {
 
   const isKakaoMapScriptInitialized = useKakaoInit();
 
+  const bounds = useMemo(() => {
+    if (!isKakaoMapScriptInitialized) return undefined;
+
+    const latlngbounds = new kakao.maps.LatLngBounds();
+
+    travelLocations.forEach((travelLocation) => {
+      latlngbounds.extend(
+        new kakao.maps.LatLng(
+          travelLocation.lnglat[1],
+          travelLocation.lnglat[0]
+        )
+      );
+    });
+    return latlngbounds;
+  }, [isKakaoMapScriptInitialized]);
+
   return (
     <>
       <Container
@@ -125,6 +141,7 @@ const LiveSchedule = () => {
               <Map
                 onCreate={(internalKakaoMap) => {
                   setMap(internalKakaoMap);
+                  internalKakaoMap.setBounds(bounds!);
                   console.log(internalKakaoMap);
                 }}
                 onClick={(target, mouseEvent) => {
