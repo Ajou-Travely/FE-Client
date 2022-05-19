@@ -8,6 +8,6 @@ interface Props {
 }
 
 const PrivateRoute = ({ user, children: Component }: Props) => {
-  return Component;
+  return isLogin() ? Component : <Navigate to="/signIn" />;
 };
 export default PrivateRoute;
