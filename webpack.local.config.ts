@@ -50,6 +50,9 @@ const config: webpack.Configuration = {
 
   plugins: [
     new webpack.DefinePlugin({
+      API_URL: JSON.stringify("http://localhost:8080"),
+    }),
+    new webpack.DefinePlugin({
       "process.env": JSON.stringify(process.env),
     }),
     new HtmlWebpackPlugin({

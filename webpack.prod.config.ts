@@ -3,10 +3,10 @@ import * as webpack from 'webpack';
 import * as path from "path";
 import 'webpack-dev-server';
 
-const mode = (process.env.NODE_ENV || "development") as "development" | "none" | "production";
+const mode = (process.env.NODE_ENV || "development") as "production" | "development" | "none";
 
 const config: webpack.Configuration = {
-  mode,
+  mode: mode === "production" ? "production" : "development",
   devServer: {
     historyApiFallback: true,
     port: 3000,
@@ -49,6 +49,9 @@ const config: webpack.Configuration = {
   },
 
   plugins: [
+    new webpack.DefinePlugin({
+      API_URL: JSON.stringify("https://api.travely.guide"),
+    }),
     new webpack.DefinePlugin({
       "process.env": JSON.stringify(process.env),
     }),

@@ -4,10 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack server --mode development --open --hot",
-    "build": "webpack --mode production",
-    "prestart": "cross-env NODE_ENV=production npm run build",
-    "start": "webpack --mode development"
+    "build:prod": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "start:local": "webpack server --mode development --config webpack.local.config.ts --open --hot",
+    "start:dev": "webpack server --mode development --config webpack.dev.config.ts --open --hot",
+    "start:prod": "webpack server --mode production --config webpack.prod.config.ts --open --hot",
+    "prestart": "cross-env NODE_ENV=production npm run build"
   },
   "dependencies": {
     "@babel/runtime": "^7.17.9",
