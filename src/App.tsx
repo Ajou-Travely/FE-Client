@@ -20,6 +20,7 @@ import {
 } from "@constants/index";
 
 import OAuth2RedirectHandler from "@routes/oauth";
+import DashboardPage from "@pages/dashboard";
 import Navigation from "./components/organisms/navigation";
 import Invite from "./components/pages/invite";
 
