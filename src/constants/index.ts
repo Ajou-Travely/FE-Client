@@ -2,7 +2,6 @@
 
 export const KAKAO_API_KEY =
   "//dapi.kakao.com/v2/maps/sdk.js?appkey=4bd2c0bb8e2837b6462633a0ab8a7728&libraries=services&autoload=false";
-export const MAIN_URL = "/";
 
 export const SIGNIN_URL = "/signIn";
 
