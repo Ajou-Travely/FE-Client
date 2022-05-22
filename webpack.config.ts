@@ -7,6 +7,7 @@ const mode = (process.env.NODE_ENV || "development") as "development" | "none" |
 
 const config: webpack.Configuration = {
   mode,
+  devtool: 'inline-source-map',
   devServer: {
     historyApiFallback: true,
     port: 3000,
@@ -34,11 +35,8 @@ const config: webpack.Configuration = {
     rules: [
       {
         test: /\.(ts|js)x?$/i,
+        use: ["babel-loader"],
         exclude: /node_modules/,
-        use: [
-          "babel-loader",
-          "ts-loader"
-        ],
       },
     ],
   },
@@ -55,8 +53,7 @@ const config: webpack.Configuration = {
     new HtmlWebpackPlugin({
       publicPath: "/",
       template: "./public/index.html",
-    }),
-    new webpack.HotModuleReplacementPlugin(),
+    })
   ],
 };
 
