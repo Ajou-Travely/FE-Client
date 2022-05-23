@@ -30,7 +30,9 @@
     "react-query": "^3.34.19",
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.3.0",
+    "redux-persist": "^6.0.0",
     "socket.io-client": "^4.5.0",
+    "use-react-router-breadcrumbs": "^3.2.1",
     "webpack-merge": "^5.8.0"
   },
   "devDependencies": {
