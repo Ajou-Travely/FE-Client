@@ -192,7 +192,6 @@ function DashboardTemplate() {
   return (
     <div
       css={css`
-        width: 100vw;
         height: 100vh;
         display: flex;
       `}
