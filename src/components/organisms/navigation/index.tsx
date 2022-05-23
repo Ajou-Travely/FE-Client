@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { NavigationStyle, Margin } from "./styles";
+import { NavigationStyle } from "./styles";
 import isLogin from "@utils/isLogin";
 import Logo from "@src/components/logo";
 import styled from "@emotion/styled";
@@ -34,22 +34,20 @@ const Wrapper = styled.div`
 const Navigation = ({ user }: Props) => {
   const navigate = useNavigate();
   return (
-    <>
-      <NavigationStyle>
-        <Wrapper>
-          <Link to = "/" style={{ textDecoration: 'none' }}>
-            <Logo />
-          </Link>
-          <div>
-            <p onClick={() => navigate("/schedule")}>계획</p>
-            <p onClick={() => navigate("/search")}>조회</p>
-            <p onClick={() => navigate("/settlement")}>정산</p>
-          </div>
-          {!isLogin() && <p onClick={() => navigate("/signIn")}>로그인</p>}
-          {isLogin() && <p>로그아웃</p>}
-        </Wrapper>
-      </NavigationStyle>
-    </>
+    <NavigationStyle>
+      <Wrapper>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <Logo />
+        </Link>
+        <div>
+          <p onClick={() => navigate("/schedule")}>계획</p>
+          <p onClick={() => navigate("/search")}>조회</p>
+          <p onClick={() => navigate("/settlement")}>정산</p>
+        </div>
+        {!isLogin() && <p onClick={() => navigate("/signIn")}>로그인</p>}
+        {isLogin() && <p>로그아웃</p>}
+      </Wrapper>
+    </NavigationStyle>
   );
 };
 

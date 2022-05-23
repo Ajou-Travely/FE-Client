@@ -2,9 +2,7 @@ import styled from "@emotion/styled";
 import { theme } from "@src/styles/theme";
 
 const Container = styled.div`
-  select {
-    align-items: center;
-  }
+  height: 100%;
 `;
 
 const Background = styled.img<{ url: string }>`

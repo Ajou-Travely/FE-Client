@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { theme } from "@src/styles/theme";
 
 const NavigationStyle = styled.div`
-  position: relative;
+  position: fixed;
   width: 100%;
   z-index: 1001;
 `;
@@ -17,9 +17,4 @@ const Logo = styled.img`
   }
 `;
 
-const Margin = styled.div`
-  margin-top: 8vh;
-  position: relative;
-`;
-
-export { NavigationStyle, Logo, Margin };
+export { NavigationStyle, Logo };

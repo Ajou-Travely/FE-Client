@@ -1,7 +1,12 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import { api } from "@src/services/schedule";
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    [api.reducerPath]: api.reducer,
+  },
+
+  middleware: (gDM) => gDM().concat(api.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
