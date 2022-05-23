@@ -22,6 +22,7 @@ import useBreadcrumbs, {
   BreadcrumbsRoute,
   createRoutesFromChildren,
 } from "use-react-router-breadcrumbs";
+import { api } from "@src/app/api";
 
 const LLink = styled(Link)`
   text-decoration: none;
@@ -135,13 +136,18 @@ function SideBar() {
           <BiCertification size={24} style={{ marginRight: 12 }} />
           설정
         </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/setting">
+        <SideBarMenu toPath="/logout">
           <BiLogOut size={24} style={{ marginRight: 12 }} />
           로그아웃
         </SideBarMenu>
       </div>
     </div>
   );
+}
+
+function TravelNameBreadCrumb({ match }) {
+  const { data: travelData } = api.useGetTravelQuery(match.params.travelId);
+  return <span>{travelData ? `${travelData.id}-${travelData.title}` : "..."}</span>;
 }
 
 function TopBar() {
@@ -228,7 +234,7 @@ const dashboardRoute: BreadcrumbsRoute<string>[] = [
       {
         path: "travels/:travelId",
         element: <TravelSinglePage />,
-        breadcrumb: "ID",
+        breadcrumb: TravelNameBreadCrumb,
       },
       {
         path: "friends",
