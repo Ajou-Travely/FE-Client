@@ -5,6 +5,7 @@ import Board from "@organisms/board";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Background,
@@ -13,9 +14,8 @@ import {
   SubmitBtn,
   ArrowImg,
 } from "./styles";
-import { useNavigate } from "react-router-dom";
 
-const Content = () => {
+function Content() {
   return (
     <div style={{ padding: "3rem 12rem" }}>
       {/* <select style={{ width: "100%", padding: "1rem", borderRadius: "10px" }}>
@@ -29,7 +29,7 @@ const Content = () => {
       <Board /> */}
     </div>
   );
-};
+}
 
 // const tempData = {
 //   title: "예비군 동원 훈련",
@@ -216,7 +216,7 @@ interface Props {
   setUser: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Main = ({ setUser }: Props) => {
+function Main({ setUser }: Props) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -269,9 +269,7 @@ const Main = ({ setUser }: Props) => {
             `}
           >
             <img
-              src={
-                "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
-              }
+              src="https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
               css={css`
                 width: 100%;
                 max-height: 800px;
@@ -343,12 +341,12 @@ const Main = ({ setUser }: Props) => {
             </Wrapper>
             <Wrapper>
               <p>시작일</p>
-              <input name="dayStart" type={"date"} required />
+              <input name="dayStart" type="date" required />
             </Wrapper>
             <ArrowImg src="/arrow.svg" />
             <Wrapper>
               <p>도착일</p>
-              <input name="dayEnd" type={"date"} required />
+              <input name="dayEnd" type="date" required />
             </Wrapper>
             <SubmitBtn />
           </form>
@@ -357,7 +355,7 @@ const Main = ({ setUser }: Props) => {
       {/* <Main2 /> */}
     </>
   );
-};
+}
 
 export default Main;
 
