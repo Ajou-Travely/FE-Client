@@ -9,7 +9,13 @@ import AddParty from "@organisms/scheduleForm/addParty";
 
 import { FlexDiv } from "@src/styles";
 
-import { Container, ChipWrapper, FormWrapper } from "./styles";
+import {
+  Container,
+  ChipWrapper,
+  FormWrapper,
+  SubContainer,
+  Footer,
+} from "./styles";
 import { createTravel } from "@src/utils/api/travel";
 
 const NewSchedule = () => {
@@ -58,31 +64,33 @@ const NewSchedule = () => {
   return (
     <Container direction="column">
       <h2>새 여행 생성</h2>
-      <ChipWrapper>
-        {["일정 선택", "여행 세부 설정", "일행 추가"].map((content, num) => (
-          <Chip key={num} {...{ content, num, status: countChip === num }} />
-        ))}
-      </ChipWrapper>
-      <FormWrapper>
-        {countChip === 0 && (
-          <SelectDate
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          />
-        )}
-        {countChip === 1 && <SelectTitle title={title} setTitle={setTitle} />}
-        {countChip === 2 && (
-          <AddParty userList={userList} addUserEmail={addUserEmail} />
-        )}
-      </FormWrapper>
-      <FlexDiv direction="row">
-        {countChip !== 0 && <Button onClick={handlePast}>이전</Button>}
-        {countChip == 2 ? (
-          <Button onClick={goNextPage}>생성</Button>
-        ) : (
-          <Button onClick={handleNext}>다음</Button>
-        )}
-      </FlexDiv>
+      <SubContainer>
+        <ChipWrapper>
+          {["일정 선택", "여행 세부 설정", "일행 추가"].map((content, num) => (
+            <Chip key={num} {...{ content, num, status: countChip === num }} />
+          ))}
+        </ChipWrapper>
+        <FormWrapper>
+          {countChip === 0 && (
+            <SelectDate
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          )}
+          {countChip === 1 && <SelectTitle title={title} setTitle={setTitle} />}
+          {countChip === 2 && (
+            <AddParty userList={userList} addUserEmail={addUserEmail} />
+          )}
+        </FormWrapper>
+        <Footer direction="row">
+          {countChip !== 0 && <Button onClick={handlePast}>이전</Button>}
+          {countChip == 2 ? (
+            <Button onClick={goNextPage}>생성</Button>
+          ) : (
+            <Button onClick={handleNext}>다음</Button>
+          )}
+        </Footer>
+      </SubContainer>
     </Container>
   );
 };
