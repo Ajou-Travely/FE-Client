@@ -32,7 +32,6 @@ import Invite from "./components/pages/invite";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
 
-const MyPage = lazy(() => import("@pages/myPage"));
 const Main = lazy(() => import("@pages/landingPage"));
 const SignIn = lazy(() => import("@pages/signIn"));
 const SignUp = lazy(() => import("@pages/signUp"));
@@ -41,7 +40,6 @@ const Schedule = lazy(() => import("@pages/schedule"));
 const NewSchedule = lazy(() => import("@pages/newSchedule"));
 const Settlement = lazy(() => import("@pages/settlement"));
 const LiveSchedule = lazy(() => import("@pages/liveSchedule"));
-const Search = lazy(() => import("@pages/search"));
 const Temp = lazy(() => import("@pages/temp"));
 
 function App() {
@@ -88,14 +86,6 @@ function App() {
         {
           path: SIGNUP_URL,
           element: <SignUp />,
-        },
-        {
-          path: MYPAGE_URL,
-          element: (
-            <PrivateRoute user={user}>
-              <MyPage />
-            </PrivateRoute>
-          ),
         },
         {
           path: "schedule",
@@ -147,7 +137,7 @@ function App() {
         </AdminRoute>
       ),
     },
-    dashboardRoute,
+    ...dashboardRoute,
   ];
 
   const element = useRoutes(routes);

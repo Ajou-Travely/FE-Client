@@ -18,7 +18,7 @@ import {
 } from "./styles";
 import { createTravel } from "@src/utils/api/travel";
 
-const NewSchedule = () => {
+function NewSchedule() {
   const params = useLocation().state as any;
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date[]>([
@@ -93,6 +93,6 @@ const NewSchedule = () => {
       </SubContainer>
     </Container>
   );
-};
+}
 
 export default NewSchedule;

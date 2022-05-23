@@ -193,7 +193,7 @@ interface Props {
   setUser: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Main = ({ setUser }: Props) => {
+function Main({ setUser }: Props) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -321,6 +321,6 @@ const Main = ({ setUser }: Props) => {
       </motion.div>
     </div>
   );
-};
+}
 
 export default Main;

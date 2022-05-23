@@ -1,6 +1,6 @@
-import { Link, Outlet, RouteObject, useMatch } from "react-router-dom";
-import TravelListPage from "@pages/dashboard/TravelListPage";
-import TravelSinglePage from "@pages/dashboard/TravelSinglePage";
+import { Link, NavLink, Outlet, RouteObject, useMatch } from "react-router-dom";
+import TravelListPage from "@pages/dashboard/pages/TravelListPage";
+import TravelSinglePage from "@pages/dashboard/pages/TravelSinglePage";
 import { css } from "@emotion/react";
 import { Logo } from "@src/components/logo";
 import {
@@ -16,8 +16,11 @@ import {
 import { motion, useAnimation } from "framer-motion";
 import { Avatar } from "@pages/liveSchedule";
 import styled from "@emotion/styled";
-import FriendsPage from "@pages/dashboard/FriendsPage";
-import MainPage from "@pages/dashboard/MainPage";
+import FriendsPage from "@pages/dashboard/pages/FriendsPage";
+import MainPage from "@pages/dashboard/pages/MainPage";
+import useBreadcrumbs, { BreadcrumbsRoute } from "use-react-router-breadcrumbs";
+import { api } from "@src/app/api";
+import FeedPage from "@pages/dashboard/pages/FeedPage";
 
 const LLink = styled(Link)`
   text-decoration: none;
@@ -75,7 +78,6 @@ function SideBarMenu({ toPath, children }: { toPath: string; children: any }) {
     </LLink>
   );
 }
-
 function SideBar() {
   return (
     <div
@@ -132,7 +134,7 @@ function SideBar() {
           <BiCertification size={24} style={{ marginRight: 12 }} />
           설정
         </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/setting">
+        <SideBarMenu toPath="/logout">
           <BiLogOut size={24} style={{ marginRight: 12 }} />
           로그아웃
         </SideBarMenu>
@@ -140,11 +142,54 @@ function SideBar() {
     </div>
   );
 }
+
+function TravelNameBreadCrumb({ match }) {
+  const { data: travelData } = api.useGetTravelQuery(match.params.travelId);
+  return (
+    <span>{travelData ? `${travelData.id}-${travelData.title}` : "..."}</span>
+  );
+}
+
+function TopBar() {
+  const { data: myInfoData } = api.useGetMyInfoQuery();
+
+  const breadcrumbs = useBreadcrumbs(dashboardRoute, { disableDefaults: true });
+
+  return (
+    <>
+      <div>
+        <span>Title</span>
+
+        <div>
+          {breadcrumbs.map(({ match, breadcrumb }) => (
+            <span key={match.pathname}>
+              <NavLink to={match.pathname}>{breadcrumb} / </NavLink>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div
+        css={css`
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        `}
+      >
+        <div>{myInfoData?.name}</div>
+        <Avatar
+          css={css`
+            background: red;
+          `}
+        />
+      </div>
+    </>
+  );
+}
 function DashboardTemplate() {
   return (
     <div
       css={css`
-        width: 100vw;
         height: 100vh;
         display: flex;
       `}
@@ -166,13 +211,7 @@ function DashboardTemplate() {
             justify-content: space-between;
           `}
         >
-          <span>Title</span>
-
-          <Avatar
-            css={css`
-              background: red;
-            `}
-          />
+          <TopBar />
         </div>
         <div
           css={css`
@@ -187,27 +226,38 @@ function DashboardTemplate() {
   );
 }
 
-const dashboardRoute: RouteObject = {
-  path: "dashboard",
-  element: <DashboardTemplate />,
-  children: [
-    {
-      index: true,
-      element: <MainPage />,
-    },
-    {
-      path: "travels",
-      element: <TravelListPage />,
-    },
-    {
-      path: "travels/:id",
-      element: <TravelSinglePage />,
-    },
-    {
-      path: "friends",
-      element: <FriendsPage />,
-    },
-  ],
-};
+const dashboardRoute: BreadcrumbsRoute<string>[] = [
+  {
+    path: "dashboard",
+    element: <DashboardTemplate />,
+    children: [
+      {
+        index: true,
+        element: <MainPage />,
+        breadcrumb: "홈",
+      },
+      {
+        path: "travels",
+        element: <TravelListPage />,
+        breadcrumb: "여행",
+      },
+      {
+        path: "travels/:travelId",
+        element: <TravelSinglePage />,
+        breadcrumb: TravelNameBreadCrumb,
+      },
+      {
+        path: "friends",
+        element: <FriendsPage />,
+        breadcrumb: "친구",
+      },
+      {
+        path: "feed",
+        element: <FeedPage />,
+        breadcrumb: "피드",
+      },
+    ],
+  },
+];
 
 export default dashboardRoute;

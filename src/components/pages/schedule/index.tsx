@@ -42,7 +42,6 @@ function Schedule() {
   useEffect(() => {
     console.log(data2);
   }, [data2]);
-
   return (
     <Container direction="column">
       <h2>내 여행</h2>
