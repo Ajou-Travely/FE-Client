@@ -53,6 +53,9 @@ function Navigation({ user }: Props) {
           <Link to="/settlement">
             <p>정산</p>
           </Link>
+          <Link to="/dashboard">
+            <p>대시보드</p>
+          </Link>
         </div>
         {!currentUser && <p onClick={() => navigate("/signIn")}>로그인</p>}
         {currentUser && <p onClick={() => logout()}>로그아웃</p>}

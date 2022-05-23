@@ -1,5 +1,7 @@
 import Button from "@src/components/atoms/button";
 import { Link, useNavigate } from "react-router-dom";
+import { api } from "@src/app/api";
+import { useEffect } from "react";
 import {
   Container,
   ScheduleWrapper,
@@ -34,7 +36,13 @@ const ScheduleElement = ({ content, people, startDate }: typeof data) => {
   );
 };
 
-const Schedule = () => {
+function Schedule() {
+  const { data: data2 } = api.useMyInfoQuery();
+
+  useEffect(() => {
+    console.log(data2);
+  }, [data2]);
+
   return (
     <Container direction="column">
       <h2>내 여행</h2>
@@ -48,6 +56,6 @@ const Schedule = () => {
       </ScheduleWrapper>
     </Container>
   );
-};
+}
 
 export default Schedule;
