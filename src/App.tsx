@@ -22,6 +22,8 @@ import {
 import OAuth2RedirectHandler from "@routes/oauth";
 import Navigation from "./components/organisms/navigation";
 import Invite from "./components/pages/invite";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
 
 const MyPage = lazy(() => import("@pages/myPage"));
 const Main = lazy(() => import("@pages/main"));
@@ -53,127 +55,137 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Global styles={reset} />
-      <Global
-        styles={css`
-          * {
-            font-family: "Spoqa Han Sans Neo", "Spoqa Han Sans JP", sans-serif;
-          }
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <Global styles={reset} />
+        <Global
+          styles={css`
+            * {
+              font-family: "Spoqa Han Sans Neo", "Spoqa Han Sans JP", sans-serif;
+            }
 
-          *,
-          *::before,
-          *::after {
-            box-sizing: border-box;
-          }
+            *,
+            *::before,
+            *::after {
+              box-sizing: border-box;
+            }
 
-          body {
-            background: #fcfcfd;
-          }
-        `}
-      />
-      <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<Spinner />}>
-          <Router>
-            <Navigation user={user} />
-            <Routes>
-              <Route
-                path={KAKAO_CALLBACK_URL}
-                element={<OAuth2RedirectHandler />}
+            body {
+              height: 92vh;
+              margin: 0px;
+              padding: 0px;
+              background: #fcfcfd;
+            }
+          `}
+        />
+        <QueryClientProvider client={queryClient}>
+          <Suspense fallback={<Spinner />}>
+            <Router>
+              <Navigation user={user} />
+              <div
+                css={css`
+                  height: 8vh;
+                `}
               />
-              <Route
-                path={MYPAGE_URL}
-                element={
-                  <PrivateRoute user={user}>
-                    <MyPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path={MAIN_URL}
-                element={
-                  <PublicRoute>
-                    <Main setUser={setUser} />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path={SIGNIN_URL}
-                element={
-                  <PublicRoute>
-                    <SignIn />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path={SIGNUP_URL}
-                element={
-                  <PublicRoute>
-                    <SignUp />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path={"/schedule"}
-                element={
-                  <PrivateRoute user={user}>
-                    <Schedule />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/settlement"
-                element={
-                  <PrivateRoute user={user}>
-                    <Settlement />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path={"/newSchedule"}
-                element={
-                  <PrivateRoute user={user}>
-                    <NewSchedule />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path={"/liveSchedule"}
-                element={
-                  <PrivateRoute user={user}>
-                    <LiveSchedule />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path={ADMIN_URL}
-                element={
-                  <AdminRoute>
-                    <Admin />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path={"/temp"}
-                element={
-                  <PublicRoute>
-                    <Temp />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path="/invite/accept/:id"
-                element={
-                  <PublicRoute>
-                    <Invite />
-                  </PublicRoute>
-                }
-              />
-            </Routes>
-          </Router>
-        </Suspense>
-      </QueryClientProvider>
-    </ThemeProvider>
+              <Routes>
+                <Route
+                  path={KAKAO_CALLBACK_URL}
+                  element={<OAuth2RedirectHandler />}
+                />
+                <Route
+                  path={MYPAGE_URL}
+                  element={
+                    <PrivateRoute user={user}>
+                      <MyPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path={MAIN_URL}
+                  element={
+                    <PublicRoute>
+                      <Main setUser={setUser} />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path={SIGNIN_URL}
+                  element={
+                    <PublicRoute>
+                      <SignIn />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path={SIGNUP_URL}
+                  element={
+                    <PublicRoute>
+                      <SignUp />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path={"/schedule"}
+                  element={
+                    <PrivateRoute user={user}>
+                      <Schedule />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/settlement"
+                  element={
+                    <PrivateRoute user={user}>
+                      <Settlement />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path={"/newSchedule"}
+                  element={
+                    <PrivateRoute user={user}>
+                      <NewSchedule />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path={"/liveSchedule"}
+                  element={
+                    <PrivateRoute user={user}>
+                      <LiveSchedule />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path={ADMIN_URL}
+                  element={
+                    <AdminRoute>
+                      <Admin />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path={"/temp"}
+                  element={
+                    <PublicRoute>
+                      <Temp />
+                    </PublicRoute>
+                  }
+                />
+                <Route
+                  path="/invite/accept/:id"
+                  element={
+                    <PublicRoute>
+                      <Invite />
+                    </PublicRoute>
+                  }
+                />
+              </Routes>
+            </Router>
+          </Suspense>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </Provider>
   );
 }
 
