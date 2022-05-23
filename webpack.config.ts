@@ -7,13 +7,14 @@ const mode = (process.env.NODE_ENV || "development") as "development" | "none" |
 
 const config: webpack.Configuration = {
   mode,
+  devtool: 'inline-source-map',
   devServer: {
     historyApiFallback: true,
     port: 3000,
     hot: true,
   },
   entry: {
-    app: path.join(__dirname, "index.tsx"),
+    app: path.join(__dirname, "src", "index.tsx"),
   },
 
   resolve: {
@@ -34,11 +35,8 @@ const config: webpack.Configuration = {
     rules: [
       {
         test: /\.(ts|js)x?$/i,
+        use: ["babel-loader"],
         exclude: /node_modules/,
-        use: [
-          "babel-loader",
-          "ts-loader"
-        ],
       },
     ],
   },
@@ -52,14 +50,10 @@ const config: webpack.Configuration = {
     new webpack.DefinePlugin({
       "process.env": JSON.stringify(process.env),
     }),
-    new webpack.ProvidePlugin({
-      React: "react",
-    }),
     new HtmlWebpackPlugin({
       publicPath: "/",
       template: "./public/index.html",
-    }),
-    new webpack.HotModuleReplacementPlugin(),
+    })
   ],
 };
 

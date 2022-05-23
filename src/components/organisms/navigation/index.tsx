@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { NavigationStyle } from "./styles";
-import isLogin from "@utils/isLogin";
-import Logo from "@src/components/logo";
+import { Logo } from "@src/components/logo";
 import styled from "@emotion/styled";
+import { api, isLoginSelector } from "@src/app/api";
+import { useAppSelector } from "@src/app/hooks";
+import { NavigationStyle } from "./styles";
 
 interface Props {
   user: boolean;
@@ -31,24 +32,33 @@ const Wrapper = styled.div`
   }
 `;
 
-const Navigation = ({ user }: Props) => {
+function Navigation({ user }: Props) {
   const navigate = useNavigate();
+  const currentUser = useAppSelector(isLoginSelector);
+  const [logout] = api.useLogoutMutation();
+
   return (
     <NavigationStyle>
       <Wrapper>
         <Link to="/" style={{ textDecoration: "none" }}>
-          <Logo />
+          <Logo color="#1e52e2" />
         </Link>
         <div>
-          <p onClick={() => navigate("/schedule")}>계획</p>
-          <p onClick={() => navigate("/search")}>조회</p>
-          <p onClick={() => navigate("/settlement")}>정산</p>
+          <Link to="/schedule">
+            <p>계획</p>
+          </Link>
+          <Link to="/search">
+            <p>조회</p>
+          </Link>
+          <Link to="/settlement">
+            <p>정산</p>
+          </Link>
         </div>
-        {!isLogin() && <p onClick={() => navigate("/signIn")}>로그인</p>}
-        {isLogin() && <p>로그아웃</p>}
+        {!currentUser && <p onClick={() => navigate("/signIn")}>로그인</p>}
+        {currentUser && <p onClick={() => logout()}>로그아웃</p>}
       </Wrapper>
     </NavigationStyle>
   );
-};
+}
 
 export default Navigation;

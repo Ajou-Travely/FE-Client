@@ -1,11 +1,11 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import { api } from "@src/services/schedule";
+import { api, slice } from "@src/app/api";
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
+    [slice.name]: slice.reducer,
   },
-
   middleware: (gDM) => gDM().concat(api.middleware),
 });
 

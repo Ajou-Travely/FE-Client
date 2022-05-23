@@ -2,7 +2,6 @@
 
 export const KAKAO_API_KEY =
   "//dapi.kakao.com/v2/maps/sdk.js?appkey=4bd2c0bb8e2837b6462633a0ab8a7728&libraries=services&autoload=false";
-export const MAIN_URL = "/";
 
 export const SIGNIN_URL = "/signIn";
 
@@ -16,7 +15,7 @@ export const KAKAO_CALLBACK_URL = "/oauth/kakao/callback";
 
 export const ERROR_MESSAGE = "올바른 작성이 필요합니다.";
 
-export const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=4bd2c0bb8e2837b6462633a0ab8a7728&redirect_uri=http://${window.location.host}${KAKAO_CALLBACK_URL}callback&response_type=code`;
+export const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=4bd2c0bb8e2837b6462633a0ab8a7728&redirect_uri=${window.location.protocol}//${window.location.host}${KAKAO_CALLBACK_URL}&response_type=code`;
 
 export const DAY = ["월", "화", "수", "목", "금", "토", "일"];
 

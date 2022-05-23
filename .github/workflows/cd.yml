@@ -27,7 +27,7 @@ jobs:
         run: yarn
 
       - name: Build
-        run: yarn build
+        run: yarn build:dev
 
       - name: Deploy to S3
         env:
