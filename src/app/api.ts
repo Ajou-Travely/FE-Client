@@ -28,6 +28,17 @@ interface ITravelResponse {
   schedules: IScheduleResponse[];
 }
 
+interface ICostResponse {
+  id: number;
+  title: string;
+  startDate: number;
+  endDate: number;
+  memo: string;
+  managerId: number;
+  users: IUserResponse[];
+  schedules: IScheduleResponse[];
+}
+
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://api.dev.travely.guide",
@@ -137,6 +148,9 @@ export const api = createApi({
         method: "GET",
       }),
     }),
+    /**
+     * Cost Apis
+     */
   }),
 });
 
