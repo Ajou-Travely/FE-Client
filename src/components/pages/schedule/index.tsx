@@ -13,9 +13,9 @@ import {
   NewScheduleBtn,
 } from "./styles";
 
-const data = { content: "충청도", people: 4, startDate: "2022-03-11" };
+const data = { content: "충청도", people: 4, startDate: "2022-03-11", endDate: "2022-03-11" };
 
-const ScheduleElement = ({ content, people, startDate }: typeof data) => {
+export const ScheduleElement = ({ content, people, startDate, endDate }: typeof data) => {
   const navigate = useNavigate();
   return (
     <ScheduleElementContainer onClick={() => navigate("/liveSchedule")}>
@@ -29,7 +29,7 @@ const ScheduleElement = ({ content, people, startDate }: typeof data) => {
             <Avartar />
             <Avartar />
           </AvartarContainer>
-          <p>{startDate}</p>
+          <p>{startDate}~{endDate}</p>
         </div>
       </Wrapper>
     </ScheduleElementContainer>
@@ -37,11 +37,6 @@ const ScheduleElement = ({ content, people, startDate }: typeof data) => {
 };
 
 function Schedule() {
-  const { data: data2 } = api.useMyInfoQuery();
-
-  useEffect(() => {
-    console.log(data2);
-  }, [data2]);
   return (
     <Container direction="column">
       <h2>내 여행</h2>

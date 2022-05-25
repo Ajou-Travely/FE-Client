@@ -3,8 +3,8 @@ import { Logo } from "@src/components/logo";
 import styled from "@emotion/styled";
 import { api, isLoginSelector } from "@src/app/api";
 import { useAppSelector } from "@src/app/hooks";
-import { NavigationStyle } from "./styles";
 import { css } from "@emotion/react";
+import { NavigationStyle } from "./styles";
 
 interface Props {
   user: boolean;
@@ -48,9 +48,6 @@ function Navigation({ user }: Props) {
           <div>
             <Link to="/schedule">
               <p>계획</p>
-            </Link>
-            <Link to="/search">
-              <p>조회</p>
             </Link>
             <Link to="/settlement">
               <p>정산</p>
