@@ -31,6 +31,8 @@ import Navigation from "./components/organisms/navigation";
 import Invite from "./components/pages/invite";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
+import NewSettlement from "./components/pages/newSettlement";
+import OauthSignUp from "./components/pages/signUp/kakao";
 
 const Main = lazy(() => import("@pages/landingPage"));
 const SignIn = lazy(() => import("@pages/signIn"));
@@ -88,6 +90,10 @@ function App() {
           element: <SignUp />,
         },
         {
+          path: "/signUp/kakao",
+          element: <OauthSignUp />,
+        },
+        {
           path: "schedule",
           element: (
             <PrivateRoute user={user}>
@@ -100,6 +106,14 @@ function App() {
           element: (
             <PrivateRoute user={user}>
               <Settlement />
+            </PrivateRoute>
+          ),
+        },
+        {
+          path: "newSettlement",
+          element: (
+            <PrivateRoute user={user}>
+              <NewSettlement />
             </PrivateRoute>
           ),
         },
