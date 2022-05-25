@@ -102,7 +102,7 @@ function App() {
           ),
         },
         {
-          path: "settlement",
+          path: "settlement/:travelId",
           element: (
             <PrivateRoute user={user}>
               <Settlement />
@@ -110,7 +110,7 @@ function App() {
           ),
         },
         {
-          path: "newSettlement",
+          path: "newSettlement/:travelId",
           element: (
             <PrivateRoute user={user}>
               <NewSettlement />
