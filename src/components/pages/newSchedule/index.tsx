@@ -16,10 +16,11 @@ import {
   SubContainer,
   Footer,
 } from "./styles";
-import { createTravel } from "@src/utils/api/travel";
+import { api } from "@src/app/api";
 
 function NewSchedule() {
   const params = useLocation().state as any;
+  const [createTravel, { data }] = api.useCreateTravelMutation();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date[]>([
     new Date(),
@@ -27,9 +28,9 @@ function NewSchedule() {
   ]);
   const [countChip, setCountChip] = useState(0);
   const [title, setTitle] = useState("");
-  const [userList, setUserList] = useState<string[]>([]);
+  const [userEmails, setUserEmails] = useState<string[]>([]);
 
-  const addUserEmail = (email) => setUserList((v) => [...v, email]);
+  const addUserEmail = (email) => setUserEmails((v) => [...v, email]);
 
   const handlePast = () => setCountChip(Math.max(0, countChip - 1));
 
@@ -44,14 +45,12 @@ function NewSchedule() {
     handleEmptyTitle && setCountChip(Math.min(2, countChip + 1));
   const goNextPage = async () => {
     const [startDate, endDate] = selectedDate;
-
-    const { status } = await createTravel({
+    createTravel({
       startDate: setDateFormat(startDate),
       endDate: setDateFormat(endDate),
       title,
-      userEmails: userList,
+      userEmails,
     });
-    if (status === undefined) navigate("/liveSchedule");
   };
 
   useEffect(() => {
@@ -60,6 +59,10 @@ function NewSchedule() {
     setCountChip(2);
     setTitle(params?.title);
   }, [params]);
+
+  useEffect(() => {
+    if (data !== undefined) navigate("/liveSchedule/" + data);
+  }, [data]);
 
   return (
     <Container direction="column">
@@ -79,7 +82,7 @@ function NewSchedule() {
           )}
           {countChip === 1 && <SelectTitle title={title} setTitle={setTitle} />}
           {countChip === 2 && (
-            <AddParty userList={userList} addUserEmail={addUserEmail} />
+            <AddParty userEmails={userEmails} addUserEmail={addUserEmail} />
           )}
         </FormWrapper>
         <Footer direction="row">
