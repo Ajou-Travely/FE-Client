@@ -21,6 +21,9 @@ import MainPage from "@pages/dashboard/pages/MainPage";
 import useBreadcrumbs, { BreadcrumbsRoute } from "use-react-router-breadcrumbs";
 import { api } from "@src/app/api";
 import FeedPage from "@pages/dashboard/pages/FeedPage";
+import EventPage from "@pages/dashboard/pages/EventPage";
+import NoticePage from "@pages/dashboard/pages/NoticePage";
+import TravelEditPage from "@pages/dashboard/pages/TravelEditPage";
 
 const LLink = styled(Link)`
   text-decoration: none;
@@ -122,7 +125,7 @@ function SideBar() {
           <BiGridAlt size={24} style={{ marginRight: 12 }} />
           피드
         </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/notification">
+        <SideBarMenu toPath="/dashboard/notice">
           <BiBookAlt size={24} style={{ marginRight: 12 }} />
           공지사항
         </SideBarMenu>
@@ -247,6 +250,11 @@ const dashboardRoute: BreadcrumbsRoute<string>[] = [
         breadcrumb: TravelNameBreadCrumb,
       },
       {
+        path: "travels/:travelId/edit",
+        element: <TravelEditPage />,
+        breadcrumb: "수정",
+      },
+      {
         path: "friends",
         element: <FriendsPage />,
         breadcrumb: "친구",
@@ -255,6 +263,16 @@ const dashboardRoute: BreadcrumbsRoute<string>[] = [
         path: "feed",
         element: <FeedPage />,
         breadcrumb: "피드",
+      },
+      {
+        path: "notice",
+        element: <NoticePage />,
+        breadcrumb: "공지사항",
+      },
+      {
+        path: "event",
+        element: <EventPage />,
+        breadcrumb: "이벤트",
       },
     ],
   },

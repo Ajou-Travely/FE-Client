@@ -9,10 +9,11 @@ function TravelListPage() {
   return (
     <div>
       {travelsData &&
-        travelsData.map((travelData) => (
+        travelsData.data.map((travelData) => (
           <div>
             <NavLink to={travelData.id.toString()}>
               {travelData.title}
+              {travelData.startDate}~{travelData.endDate}
             </NavLink>
           </div>
         ))}
