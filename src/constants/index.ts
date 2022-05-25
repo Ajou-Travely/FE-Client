@@ -1,6 +1,7 @@
 // url
 
-export const KAKAO_API_APPLICATION_JAVASCRIPT_KEY = "4bd2c0bb8e2837b6462633a0ab8a7728";
+export const KAKAO_API_APPLICATION_JAVASCRIPT_KEY =
+  "4bd2c0bb8e2837b6462633a0ab8a7728";
 
 export const SIGNIN_URL = "/signIn";
 
@@ -19,10 +20,10 @@ export const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id
 export const DAY = ["월", "화", "수", "목", "금", "토", "일"];
 
 export const SIGNIN_INPUT_DATA = {
-  id: {
+  email: {
     type: "text",
-    placeholder: "아이디",
-    content: "아이디",
+    placeholder: "이메일",
+    content: "이메일",
   },
   password: {
     type: "current-password",
