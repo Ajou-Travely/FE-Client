@@ -1,14 +1,20 @@
 // import socket from "@utils/socket";
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DashBoard from "@organisms/dashBoard";
 import InnerDashBoard from "@organisms/dashBoard/inner";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Map, MapMarker, Polyline, useInjectKakaoMapApi } from "react-kakao-maps-sdk";
+import {
+  Map,
+  MapMarker,
+  Polyline,
+  useInjectKakaoMapApi,
+} from "react-kakao-maps-sdk";
 import { travelLocations, travelPaths } from "@pages/liveSchedule/dummyData";
-import { Container, CancelBtn } from "./styles";
+import { Container } from "./styles";
 import { KAKAO_API_APPLICATION_JAVASCRIPT_KEY } from "@src/constants";
+import LabelBtn from "@src/components/atoms/button/label";
 
 interface SocketProps {
   status: string;
@@ -35,9 +41,9 @@ export const AvatarGroup = styled.div`
 function LiveSchedule() {
   const [innerDashBoardOnOff, setInnerDashBoardOnOff] = useState(false);
   const [roomCode, setRoomCode] = useState("");
+  const [type, setType] = useState<"search" | "recommend">("search");
   const [map, setMap] = useState<any>();
   const [markers, setMarkers] = useState<any[]>([]);
-  const [userList, setUserList] = useState({});
   const navigate = useNavigate();
 
   const [seletedPosition, setSelectedPosition] = useState<
@@ -90,30 +96,31 @@ function LiveSchedule() {
       >
         <DashBoard setInnerDashBoardOnOff={setInnerDashBoardOnOff} />
         {innerDashBoardOnOff && (
-          <>
-            <InnerDashBoard
-              map={map}
-              setMarkers={setMarkers}
-              deleteMarker={deleteMarker}
-            />
-            <CancelBtn
-              url="/cancel.svg"
-              onClick={() => {
-                setInnerDashBoardOnOff(false);
-                deleteMarker();
-              }}
-            />
-          </>
+          <InnerDashBoard
+            type={type}
+            map={map}
+            setMarkers={setMarkers}
+            deleteMarker={deleteMarker}
+          />
         )}
-        {/* <AbsoluteWrapper url="/cancel.svg">
-          <button />
-        </AbsoluteWrapper> */}
-        {/* <AbsoluteWrapper>
-          <button>추천</button>
-        </AbsoluteWrapper>
-        <AbsoluteWrapper>
-          <button></button>
-        </AbsoluteWrapper> */}
+        <div>
+          {innerDashBoardOnOff && (
+            <>
+              <LabelBtn
+                url="/cancel.svg"
+                onClick={() => {
+                  setInnerDashBoardOnOff(false);
+                  deleteMarker();
+                }}
+              />
+              <LabelBtn url="/search.svg" onClick={() => setType("search")} />
+              <LabelBtn
+                url="/recommend.svg"
+                onClick={() => setType("recommend")}
+              />
+            </>
+          )}
+        </div>
       </div>
       <div
         css={css`
