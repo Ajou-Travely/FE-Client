@@ -22,7 +22,7 @@ interface SignUpFormInterface {
   password: string;
 }
 
-function SignUpForm() {
+function SignUpForm({ kakaoId }: { kakaoId?: string }) {
   const {
     register,
     handleSubmit,
@@ -50,6 +50,7 @@ function SignUpForm() {
     // console.log({ birth: `${year}-${month}-${day}`, ...rest });
     await signUp({
       email,
+      kakaoId,
       name,
       phoneNumber,
       birth: `${year}-${month}-${day}`,
@@ -119,7 +120,6 @@ function SignUpForm() {
       <SignUpInput {...inputProps("tendency")} />
       <BirthInputForm />
       <SignUpInput {...inputProps("email")} />
-      <SignUpInput {...inputProps("password")} />
       <Button>제출</Button>
     </SignFormStyle>
   );
