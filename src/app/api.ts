@@ -14,7 +14,7 @@ interface IScheduleResponse {
   place: {
     placeId: number;
     placeName: string;
-  }[];
+  };
   users: IUserResponse[];
 }
 interface IPaginationResponse<T> {

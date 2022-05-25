@@ -91,7 +91,10 @@ function SideBar() {
         align-items: flex-start;
 
         border-right: 1px solid rgba(0, 0, 0, 0.1);
+
+        // FIXME : Is there better way?
         width: 250px;
+        min-width: 250px;
       `}
     >
       <div
@@ -161,7 +164,14 @@ function TopBar() {
   return (
     <>
       <div>
-        <span>Title</span>
+        <span
+          css={css`
+            font-weight: 500;
+            font-size: 24px;
+          `}
+        >
+          메인
+        </span>
 
         <div>
           {breadcrumbs.map(({ match, breadcrumb }) => (
@@ -209,6 +219,7 @@ function DashboardTemplate() {
         <div
           css={css`
             height: 80px;
+            padding: 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;

@@ -170,7 +170,10 @@ function TravelSinglePage() {
           background: lightgrey;
           height: 700px;
         `}
-      />
+      >
+        {travelData &&
+          travelData.schedules.map((schedule) => <div>{schedule.place.placeName}</div>)}
+      </div>
     </div>
   );
 }
