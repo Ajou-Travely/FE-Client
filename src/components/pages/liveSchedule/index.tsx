@@ -94,15 +94,15 @@ function LiveSchedule() {
           box-sizing: border-box;
         `}
       >
-        <DashBoard setInnerDashBoardOnOff={setInnerDashBoardOnOff} />
-        {innerDashBoardOnOff && (
+        {/* <DashBoard setInnerDashBoardOnOff={setInnerDashBoardOnOff} /> */}
+        {/* {innerDashBoardOnOff && (
           <InnerDashBoard
             type={type}
             map={map}
             setMarkers={setMarkers}
             deleteMarker={deleteMarker}
           />
-        )}
+        )} */}
         <div>
           {innerDashBoardOnOff && (
             <>
