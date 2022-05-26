@@ -24,7 +24,7 @@ interface IPaginationResponse<T> {
   content: T[];
 }
 
-interface ITravelResponse {
+export interface ITravelResponse {
   id: number;
   title: string;
   startDate: string;
@@ -202,6 +202,13 @@ export const api = createApi({
           userIds: arg.userIds,
         },
       }),
+    }),
+    getSchedule: builder.query<any[], string>({
+      query: (arg) => ({
+        url: TRAVEL_BASE_URL + `/${arg}/schedules`,
+        method: "GET",
+      }),
+      // providesTags: ["schedule"],
     }),
     /**
      * Cost Apis

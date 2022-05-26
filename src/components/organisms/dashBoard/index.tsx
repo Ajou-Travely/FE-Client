@@ -1,16 +1,17 @@
-import { api } from "@src/services/schedule";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd"; // eslint-disable-line
 import ScheduleBoard from "@atoms/scheduleBoard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { travelLocations } from "@pages/liveSchedule/dummyData";
 import { DashBaordStyle, ScheduleContainer, AddButton } from "./styles";
+import { api } from "@src/app/api";
 
 interface Props {
+  travelId: string | undefined;
   setInnerDashBoardOnOff: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DashBoard = ({ setInnerDashBoardOnOff }: Props) => {
-  const { data, isLoading, error } = api.useGetScheduleQuery(1);
+const DashBoard = ({ travelId, setInnerDashBoardOnOff }: Props) => {
+  const { data, isLoading, error } = api.useGetScheduleQuery(travelId!);
   const [form, setForm] = useState(travelLocations);
   function handleOnDragEnd(result: any) {
     if (!result.destination) {
@@ -25,6 +26,10 @@ const DashBoard = ({ setInnerDashBoardOnOff }: Props) => {
     setForm(currentList);
   }
 
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   return (
     <DashBaordStyle>
       <h2>어디론가 떠나는 여행</h2>
@@ -34,7 +39,7 @@ const DashBoard = ({ setInnerDashBoardOnOff }: Props) => {
             {(provided) => (
               <div ref={provided.innerRef}>
                 {data !== undefined &&
-                  data.map((item, index) => (
+                  data.map(({ place }, index) => (
                     <Draggable index={index} draggableId={`${index}`}>
                       {(providedInner) => (
                         <div
@@ -43,8 +48,8 @@ const DashBoard = ({ setInnerDashBoardOnOff }: Props) => {
                           {...providedInner.dragHandleProps}
                         >
                           <ScheduleBoard
-                            title={item.title}
-                            description={item.description}
+                            title={place.placeName}
+                            description={""}
                           />
                         </div>
                       )}
