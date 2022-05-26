@@ -254,6 +254,21 @@ export const api = createApi({
         },
       }),
     }),
+    /**
+     * Invite Apis
+     */
+    acceptInvite: builder.query<string, string>({
+      query: (code) => ({
+        url: TRAVEL_BASE_URL + `/accept/${code}`,
+        method: "GET",
+      }),
+    }),
+    rejectInvite: builder.query<string, string>({
+      query: (code) => ({
+        url: TRAVEL_BASE_URL + `/reject${code}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
