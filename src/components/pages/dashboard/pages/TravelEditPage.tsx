@@ -91,7 +91,10 @@ function TravelEditPage() {
         `}
       >
         <DashBoard
+          map={map}
           travelId={travelId}
+          setMarkers={setMarkers}
+          deleteMarker={deleteMarker}
           setInnerDashBoardOnOff={setInnerDashBoardOnOff}
         />
         {innerDashBoardOnOff && (
