@@ -15,6 +15,8 @@ interface IScheduleResponse {
   place: {
     placeId: number;
     placeName: string;
+    lat: number;
+    lng: number;
   };
   users: IUserResponse[];
 }
@@ -102,7 +104,7 @@ export const api = createApi({
     }),
     signUp: builder.mutation<any, any>({
       query: (signUpData) => ({
-        url: USER_BASE_URL + "/signup",
+        url: `${USER_BASE_URL}/signup`,
         method: "POST",
         body: signUpData,
       }),
@@ -125,7 +127,7 @@ export const api = createApi({
       void
     >({
       query: () => ({
-        url: USER_BASE_URL + "/my-info",
+        url: `${USER_BASE_URL}/my-info`,
         method: "GET",
       }),
     }),
@@ -160,13 +162,13 @@ export const api = createApi({
     }),
     getTravel: builder.query<ITravelResponse, string>({
       query: (travelId) => ({
-        url: TRAVEL_BASE_URL + `/${travelId}`,
+        url: `${TRAVEL_BASE_URL}/${travelId}`,
         method: "GET",
       }),
     }),
     getUsers: builder.query<any, string>({
       query: (travelId) => ({
-        url: TRAVEL_BASE_URL + `/${travelId}/users`,
+        url: `${TRAVEL_BASE_URL}/${travelId}/users`,
         method: "GET",
       }),
     }),
@@ -193,7 +195,7 @@ export const api = createApi({
       }
     >({
       query: (arg) => ({
-        url: TRAVEL_BASE_URL + `/${arg.travelId}/schedules`,
+        url: `${TRAVEL_BASE_URL}/${arg.travelId}/schedules`,
         method: "POST",
         body: {
           endTime: arg.endTime,
@@ -205,7 +207,7 @@ export const api = createApi({
     }),
     getSchedule: builder.query<any[], string>({
       query: (arg) => ({
-        url: TRAVEL_BASE_URL + `/${arg}/schedules`,
+        url: `${TRAVEL_BASE_URL}/${arg}/schedules`,
         method: "GET",
       }),
       // providesTags: ["schedule"],
@@ -231,7 +233,7 @@ export const api = createApi({
       }
     >({
       query: (arg) => ({
-        url: TRAVEL_BASE_URL + `/${arg.travelId}​/schedules​/${arg.scheduleId}`,
+        url: `${TRAVEL_BASE_URL}/${arg.travelId}​/schedules​/${arg.scheduleId}`,
         method: "PUT",
       }),
     }),
@@ -246,13 +248,13 @@ export const api = createApi({
       }
     >({
       query: (arg) => ({
-        url: TRAVEL_BASE_URL + `/${arg.travelId}/costs/${arg.costId}`,
+        url: `${TRAVEL_BASE_URL}/${arg.travelId}/costs/${arg.costId}`,
         method: "GET",
       }),
     }),
     getCostByTravelId: builder.query<any, string>({
       query: (travelId) => ({
-        url: TRAVEL_BASE_URL + `/${travelId}/costs`,
+        url: `${TRAVEL_BASE_URL}/${travelId}/costs`,
         method: "GET",
       }),
     }),
@@ -268,7 +270,7 @@ export const api = createApi({
       }
     >({
       query: (arg) => ({
-        url: TRAVEL_BASE_URL + `/${arg.travelId}/costs`,
+        url: `${TRAVEL_BASE_URL}/${arg.travelId}/costs`,
         method: "POST",
         body: {
           amountsPerUser: arg.amountsPerUser,
@@ -284,13 +286,13 @@ export const api = createApi({
      */
     acceptInvite: builder.query<string, string>({
       query: (code) => ({
-        url: TRAVEL_BASE_URL + `/accept/${code}`,
+        url: `${TRAVEL_BASE_URL}/accept/${code}`,
         method: "GET",
       }),
     }),
     rejectInvite: builder.query<string, string>({
       query: (code) => ({
-        url: TRAVEL_BASE_URL + `/reject${code}`,
+        url: `${TRAVEL_BASE_URL}/reject${code}`,
         method: "GET",
       }),
     }),
