@@ -20,8 +20,10 @@ function TravelEditPage() {
   const [map, setMap] = useState<any>();
   const [type, setType] = useState<"search" | "recommend">("search");
 
+  /**
+   * Update Route Info Data
+   */
   const [routeInfos, setRouteInfos] = useState<any[]>();
-
   useEffect(() => {
     if (!travelData) {
       return;
@@ -29,7 +31,7 @@ function TravelEditPage() {
 
     async function getRoute(origLat, origLng, destLat, destLng) {
       const routeResponse = await axios.get(
-        "http://123.214.75.32:8080/ors/v2/directions/driving-car",
+        "http://123.214.75.32:18080/ors/v2/directions/driving-car",
         {
           params: {
             start: `${origLng},${origLat}`,
