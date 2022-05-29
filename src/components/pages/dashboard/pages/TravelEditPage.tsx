@@ -5,7 +5,7 @@ import {
   useInjectKakaoMapApi,
 } from "react-kakao-maps-sdk";
 import { travelLocations, travelPaths } from "@pages/liveSchedule/dummyData";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DashBoard from "@organisms/dashBoard";
 import InnerDashBoard from "@organisms/dashBoard/inner";
 import { css } from "@emotion/react";
@@ -13,6 +13,8 @@ import LabelBtn from "@src/components/atoms/button/label";
 import { useParams } from "react-router-dom";
 import { api } from "@src/app/api";
 import axios from "axios";
+import ListProto from "@pages/dashboard/components/timeline/ListProto";
+import SplitBill from "@pages/dashboard/components/timeline/SplitBill";
 
 function TravelEditPage() {
   const { travelId } = useParams<"travelId">();
@@ -20,6 +22,11 @@ function TravelEditPage() {
   const [map, setMap] = useState<any>();
   const [type, setType] = useState<"search" | "recommend">("search");
 
+  const [tempData, setTempData] = useState([
+    { name: "강남역", address: "강남구" },
+    { name: "역삼역", address: "강남구" },
+    { name: "양재역", address: "강남구" },
+  ]);
   /**
    * Update Route Info Data
    */
@@ -136,6 +143,31 @@ function TravelEditPage() {
         flex-direction: row;
       `}
     >
+      <div
+        css={css`
+          display: flex;
+          flex-direction: column;
+
+          background: white;
+        `}
+      >
+        <div
+          css={css`
+            display: flex;
+            flex-direction: row;
+          `}
+        >
+          <label htmlFor="tab1" role="button"><span>Tab 1</span></label>
+          <input type="radio" value="Day 1" />
+          <label>Day 1</label>
+          <input type="radio" value="Day 2" />
+          <label>Day 1</label>
+          <input type="radio" value="Day 3" />
+          <label>Day 1</label>
+        </div>
+        <SplitBill />
+        <ListProto data={tempData} updateData={setTempData}/>
+      </div>
       <div
         css={css`
           display: flex;
