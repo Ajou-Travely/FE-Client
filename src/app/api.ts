@@ -150,6 +150,8 @@ export const api = createApi({
       {
         title: string;
         userEmails: string[];
+        startDate: string;
+        endDate: string;
       }
     >({
       query: (arg) => ({
@@ -201,7 +203,9 @@ export const api = createApi({
       any,
       {
         travelId: number;
-        endTime: "2022-05-23T13:30:07.247Z";
+        date: string;
+        endTime: "13:30:07";
+        startTime: "13:30:07";
         place: {
           addressName: string;
           addressRoadName: string;
@@ -212,13 +216,15 @@ export const api = createApi({
           lat: number;
           lng: number;
         };
-        startTime: "2022-05-23T13:30:07.247Z";
         userIds: number[];
       }
     >({
       query: (arg) => ({
         url: `${TRAVEL_BASE_URL}/${arg.travelId}/schedules`,
         method: "POST",
+        params: {
+          date: arg.date,
+        },
         body: {
           endTime: arg.endTime,
           place: arg.place,
@@ -237,8 +243,8 @@ export const api = createApi({
     updateSchedule: builder.mutation<
       any,
       {
-        endTime: "2022-05-26T14:49:48.223Z";
-        startTime: "2022-05-26T14:49:48.223Z";
+        endTime: "14:49:48";
+        startTime: "14:49:48";
         userIds: number[];
         place: {
           addressName: string;
