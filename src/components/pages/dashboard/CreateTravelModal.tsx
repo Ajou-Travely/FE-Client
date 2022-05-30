@@ -6,7 +6,15 @@ import { api } from "@src/app/api";
 import produce from "immer";
 import { useNavigate } from "react-router-dom";
 
-const CreateTravelModal: React.FC = () => {
+interface ICreateTravelModalProps {
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+const CreateTravelModal: React.FC<ICreateTravelModalProps> = ({
+  onClose,
+  onSuccess,
+}) => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [emails, setEmails] = useState<string[]>(["", "", ""]);
@@ -29,13 +37,9 @@ const CreateTravelModal: React.FC = () => {
     );
   }, []);
 
-  const close = useCallback(() => {
-    navigate(-1);
-  }, []);
-
   useEffect(() => {
     if (isSuccess) {
-      navigate(-1);
+      onSuccess();
     }
   }, [isSuccess]);
 
@@ -129,7 +133,7 @@ const CreateTravelModal: React.FC = () => {
             background: deepskyblue;
           `}
         >
-          <button type="button" onClick={close}>
+          <button type="button" onClick={onClose}>
             취소
           </button>
           <button
