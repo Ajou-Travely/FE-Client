@@ -112,7 +112,9 @@ const TravelEditPage = () => {
     { lat: number; lng: number } | undefined
   >(undefined);
   const bounds = useMemo(() => {
-    if (!travelData) return undefined;
+    if (selectedDateSchedules.length === 0) {
+      return undefined;
+    }
 
     const latlngbounds = new kakao.maps.LatLngBounds();
 
@@ -126,17 +128,15 @@ const TravelEditPage = () => {
     });
 
     return latlngbounds;
-  }, [travelData]);
-
-  useEffect(() => {
-    if (map && bounds) {
-      map.setBounds(bounds);
-    }
-  }, [map, bounds]);
+  }, [selectedDateSchedules]);
 
   const onMapCreated = useCallback(
     (internalKakaoMap) => {
       setMap(internalKakaoMap);
+
+      if (bounds) {
+        internalKakaoMap.setBounds(bounds);
+      }
     },
     [bounds]
   );
@@ -170,6 +170,8 @@ const TravelEditPage = () => {
     setCreateDateModalOpened(false);
   }, []);
 
+  const [createSplitBillModalOpened, setCreateSplitBillModalOpened] = useState(false);
+
   if (!travelData) {
     return <div>Loading...</div>;
   }
@@ -177,6 +179,8 @@ const TravelEditPage = () => {
   return (
     <div
       css={css`
+        height: 100%;
+
         display: flex;
         flex-direction: row;
       `}
@@ -243,12 +247,14 @@ const TravelEditPage = () => {
           )}
 
           {travelData.dates.map((dateData) => (
-            <div>
-              <input type="radio" value="Day 1" />
+            <div key={dateData.date}>
+              <input type="radio" value={dateData.date} />
               <label>{dateData.date}</label>
             </div>
           ))}
         </div>
+        <div>{travelData.title}</div>
+        <div>{travelData.users.map((user) => user.userName)}</div>
         <SplitBill />
         <ListProto data={tempData} updateData={setTempData} />
       </div>
@@ -300,51 +306,49 @@ const TravelEditPage = () => {
         )}
       </div>
 
-      {bounds && (
-        <div
-          css={css`
-            flex-grow: 1;
-          `}
+      <div
+        css={css`
+          flex-grow: 1;
+        `}
+      >
+        <Map
+          onCreate={onMapCreated}
+          onClick={onMapClicked}
+          center={{
+            lat: travelLocations[0].lnglat[1],
+            lng: travelLocations[0].lnglat[0],
+          }}
+          style={{ width: "100%", height: "100%" }}
         >
-          <Map
-            onCreate={onMapCreated}
-            onClick={onMapClicked}
-            center={{
-              lat: travelLocations[0].lnglat[1],
-              lng: travelLocations[0].lnglat[0],
-            }}
-            style={{ width: "100%", height: "100%" }}
-          >
-            {seletedPosition && (
-              <MapMarker // 마커를 생성합니다
-                position={seletedPosition}
+          {seletedPosition && (
+            <MapMarker // 마커를 생성합니다
+              position={seletedPosition}
+            />
+          )}
+
+          {selectedDateSchedules.map((schedule) => (
+            <MapMarker // 마커를 생성합니다
+              position={{
+                // 마커가 표시될 위치입니다
+                lat: schedule.place.lat,
+                lng: schedule.place.lng,
+              }}
+            >
+              <div>{schedule.place.placeName}</div>
+            </MapMarker>
+          ))}
+
+          {routeInfos &&
+            routeInfos.map((routeInfo) => (
+              <Polyline
+                path={routeInfo.path.map(([lng, lat]) => ({
+                  lat: lat,
+                  lng: lng,
+                }))}
               />
-            )}
-
-            {selectedDateSchedules.map((schedule) => (
-              <MapMarker // 마커를 생성합니다
-                position={{
-                  // 마커가 표시될 위치입니다
-                  lat: schedule.place.lat,
-                  lng: schedule.place.lng,
-                }}
-              >
-                <div>{schedule.place.placeName}</div>
-              </MapMarker>
             ))}
-
-            {routeInfos &&
-              routeInfos.map((routeInfo) => (
-                <Polyline
-                  path={routeInfo.path.map(([lng, lat]) => ({
-                    lat: lat,
-                    lng: lng,
-                  }))}
-                />
-              ))}
-          </Map>
-        </div>
-      )}
+        </Map>
+      </div>
     </div>
   );
 };
