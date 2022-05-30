@@ -2,11 +2,9 @@ import {
   Map,
   MapMarker,
   Polyline,
-  useInjectKakaoMapApi,
 } from "react-kakao-maps-sdk";
-import { travelLocations, travelPaths } from "@pages/liveSchedule/dummyData";
+import { travelLocations } from "@pages/liveSchedule/dummyData";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import DashBoard from "@organisms/dashBoard";
 import InnerDashBoard from "@organisms/dashBoard/inner";
 import { css } from "@emotion/react";
 import LabelBtn from "@src/components/atoms/button/label";
@@ -15,17 +13,32 @@ import { api } from "@src/app/api";
 import axios from "axios";
 import ListProto from "@pages/dashboard/components/timeline/ListProto";
 import SplitBill from "@pages/dashboard/components/timeline/SplitBill";
+import CreateTravelDateModal from "@pages/dashboard/CreateTravelDateModal";
 
-function TravelEditPage() {
+const TravelEditPage = () => {
   const { travelId } = useParams<"travelId">();
   const { data: travelData } = api.useGetTravelQuery(travelId!);
   const [map, setMap] = useState<any>();
   const [type, setType] = useState<"search" | "recommend">("search");
 
+  const [selectedDate] = useState<null | string>(null);
+
+  const selectedDateSchedules = useMemo(() => {
+    if (!travelData || !selectedDate) return [];
+
+    const selectedDateData = travelData.dates.find(
+      (date) => date.date !== selectedDate
+    );
+
+    if (!selectedDateData) return [];
+
+    return selectedDateData.schedules;
+  }, [travelData]);
+
   const [tempData, setTempData] = useState([
-    { name: "강남역", address: "강남구" },
-    { name: "역삼역", address: "강남구" },
-    { name: "양재역", address: "강남구" },
+    { name: "N서울타워", address: "서울특별시 용산구 남산공원길 105" },
+    { name: "강남역", address: "서울특별시 강남구" },
+    { name: "양재역", address: "서울특별시 서초구" },
   ]);
   /**
    * Update Route Info Data
@@ -54,9 +67,9 @@ function TravelEditPage() {
     }
 
     const promises: Promise<any>[] = [];
-    for (let i = 0; i < travelData.schedules.length - 1; i += 1) {
-      const origin = travelData.schedules[i];
-      const destination = travelData.schedules[i + 1];
+    for (let i = 0; i < selectedDateSchedules.length - 1; i += 1) {
+      const origin = selectedDateSchedules[i];
+      const destination = selectedDateSchedules[i + 1];
       promises.push(
         getRoute(
           origin.place.lat,
@@ -87,7 +100,7 @@ function TravelEditPage() {
 
     const latlngbounds = new kakao.maps.LatLngBounds();
 
-    travelData.schedules.forEach((travelLocation) => {
+    selectedDateSchedules.forEach((travelLocation) => {
       latlngbounds.extend(
         new kakao.maps.LatLng(
           travelLocation.place.lat,
@@ -96,7 +109,6 @@ function TravelEditPage() {
       );
     });
 
-    console.log(latlngbounds);
     return latlngbounds;
   }, [travelData]);
 
@@ -132,6 +144,16 @@ function TravelEditPage() {
     setMarkers([]);
   }
 
+  const [createDateModalOpened, setCreateDateModalOpened] = useState(false);
+
+  const openCreateDateModal = useCallback(() => {
+    setCreateDateModalOpened(true);
+  }, []);
+
+  const closeCreateDateModal = useCallback(() => {
+    setCreateDateModalOpened(false);
+  }, []);
+
   if (!travelData) {
     return <div>Loading...</div>;
   }
@@ -157,16 +179,24 @@ function TravelEditPage() {
             flex-direction: row;
           `}
         >
-          <label htmlFor="tab1" role="button"><span>Tab 1</span></label>
-          <input type="radio" value="Day 1" />
-          <label>Day 1</label>
-          <input type="radio" value="Day 2" />
-          <label>Day 1</label>
-          <input type="radio" value="Day 3" />
-          <label>Day 1</label>
+          <button onClick={openCreateDateModal}>open date create modal</button>
+          {createDateModalOpened && (
+            <CreateTravelDateModal
+              travelId={travelId!}
+              onClose={closeCreateDateModal}
+              onSuccess={closeCreateDateModal}
+            />
+          )}
+
+          {travelData.dates.map((dateData) => (
+            <div>
+              <input type="radio" value="Day 1" />
+              <label>{dateData.date}</label>
+            </div>
+          ))}
         </div>
         <SplitBill />
-        <ListProto data={tempData} updateData={setTempData}/>
+        <ListProto data={tempData} updateData={setTempData} />
       </div>
       <div
         css={css`
@@ -175,13 +205,13 @@ function TravelEditPage() {
           position: relative;
         `}
       >
-        <DashBoard
-          map={map}
-          travelId={travelId}
-          setMarkers={setMarkers}
-          deleteMarker={deleteMarker}
-          setInnerDashBoardOnOff={setInnerDashBoardOnOff}
-        />
+        {/* <DashBoard */}
+        {/*  map={map} */}
+        {/*  travelId={travelId} */}
+        {/*  setMarkers={setMarkers} */}
+        {/*  deleteMarker={deleteMarker} */}
+        {/*  setInnerDashBoardOnOff={setInnerDashBoardOnOff} */}
+        {/* /> */}
         {innerDashBoardOnOff && (
           <InnerDashBoard
             travelData={travelData}
@@ -237,7 +267,7 @@ function TravelEditPage() {
               />
             )}
 
-            {travelData.schedules.map((schedule) => (
+            {selectedDateSchedules.map((schedule) => (
               <MapMarker // 마커를 생성합니다
                 position={{
                   // 마커가 표시될 위치입니다
@@ -253,8 +283,8 @@ function TravelEditPage() {
               routeInfos.map((routeInfo) => (
                 <Polyline
                   path={routeInfo.path.map(([lng, lat]) => ({
-                    lat,
-                    lng,
+                    lat: lat,
+                    lng: lng,
                   }))}
                 />
               ))}
@@ -263,6 +293,6 @@ function TravelEditPage() {
       )}
     </div>
   );
-}
+};
 
 export default TravelEditPage;

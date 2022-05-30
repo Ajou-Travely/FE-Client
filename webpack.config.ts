@@ -39,6 +39,10 @@ const config: webpack.Configuration = {
           "babel-loader",
         ],
       },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      }
     ],
   },
 

@@ -189,16 +189,8 @@ import { useNavigate } from "react-router-dom";
 //   );
 // };
 
-interface Props {
-  setUser: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-function Main({ setUser }: Props) {
+function Main() {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setUser(!!Cookies.get("SESSION"));
-  }, []);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();

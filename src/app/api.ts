@@ -34,7 +34,10 @@ export interface ITravelResponse {
   memo: string;
   managerId: number;
   users: IUserResponse[];
-  schedules: IScheduleResponse[];
+  dates: {
+    date: string;
+    schedules: IScheduleResponse[];
+  }[];
 }
 
 interface ICostResponse {
@@ -135,12 +138,17 @@ export const api = createApi({
     /**
      * Travel Apis
      */
+    getTravels: builder.query<IPaginationResponse<ITravelResponse>, void>({
+      query: () => ({
+        url: TRAVEL_BASE_URL,
+        method: "GET",
+      }),
+      providesTags: (result) => [{ type: "Travel" }],
+    }),
     createTravel: builder.mutation<
       any,
       {
         title: string;
-        startDate: string;
-        endDate: string;
         userEmails: string[];
       }
     >({
@@ -151,26 +159,40 @@ export const api = createApi({
           ...arg,
         },
       }),
-      invalidatesTags: (result, error) => [{ type: "Travel" }],
+      invalidatesTags: (result, error) => ["Travel"],
     }),
-    getTravels: builder.query<IPaginationResponse<ITravelResponse>, void>({
-      query: () => ({
-        url: TRAVEL_BASE_URL,
-        method: "GET",
-      }),
-      providesTags: (result) => [{ type: "Travel" }],
-    }),
+
     getTravel: builder.query<ITravelResponse, string>({
       query: (travelId) => ({
         url: `${TRAVEL_BASE_URL}/${travelId}`,
         method: "GET",
       }),
+      providesTags: (result, error, travelId) => [
+        { type: "Travel", id: travelId },
+      ],
     }),
+
     getUsers: builder.query<any, string>({
       query: (travelId) => ({
         url: `${TRAVEL_BASE_URL}/${travelId}/users`,
         method: "GET",
       }),
+    }),
+    createTravelDate: builder.mutation<
+      any,
+      { travelId: string; date: string; title: string }
+    >({
+      query: ({ travelId, date, title }) => ({
+        url: `${TRAVEL_BASE_URL}/${travelId}/travelDates`,
+        method: "POST",
+        body: {
+          date: date,
+          title: title,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Travel", id: arg.travelId },
+      ],
     }),
     /**
      * Schedule Apis
@@ -233,7 +255,7 @@ export const api = createApi({
       }
     >({
       query: (arg) => ({
-        url: `${TRAVEL_BASE_URL}/${arg.travelId}​/schedules​/${arg.scheduleId}`,
+        url: `${TRAVEL_BASE_URL}/${arg.travelId}/schedules/${arg.scheduleId}`,
         method: "PUT",
       }),
     }),
@@ -308,7 +330,7 @@ export const api = createApi({
       void
     >({
       query: () => ({
-        url: USER_BASE_URL + `/friends`,
+        url: `${USER_BASE_URL}/friends`,
         method: "GET",
       }),
     }),
@@ -321,7 +343,7 @@ export const api = createApi({
       void
     >({
       query: () => ({
-        url: USER_BASE_URL + `/friends/given-requests`,
+        url: `${USER_BASE_URL}/friends/given-requests`,
         method: "GET",
       }),
     }),
@@ -334,25 +356,25 @@ export const api = createApi({
       void
     >({
       query: () => ({
-        url: USER_BASE_URL + `/friends/giving-requests`,
+        url: `${USER_BASE_URL}/friends/giving-requests`,
         method: "GET",
       }),
     }),
     deleteFriends: builder.mutation<void, number>({
       query: (targetId) => ({
-        url: USER_BASE_URL + `/friends/${targetId}`,
+        url: `${USER_BASE_URL}/friends/${targetId}`,
         method: "DELETE",
       }),
     }),
     acceptFriendsRequest: builder.mutation<void, number>({
       query: (targetId) => ({
-        url: USER_BASE_URL + `/friends/request/${targetId}`,
+        url: `${USER_BASE_URL}/friends/request/${targetId}`,
         method: "POST",
       }),
     }),
     rejectFriendsRequest: builder.mutation<void, number>({
       query: (targetId) => ({
-        url: USER_BASE_URL + `/friends/request/${targetId}`,
+        url: `${USER_BASE_URL}/friends/request/${targetId}`,
         method: "DELETE",
       }),
     }),
