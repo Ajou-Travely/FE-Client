@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import {
   Image,
   ScheduleElementContainer,
@@ -20,9 +19,8 @@ export const ScheduleElement = ({
   startDate,
   endDate,
 }: Props) => {
-  const navigate = useNavigate();
   return (
-    <ScheduleElementContainer onClick={() => navigate("/liveSchedule")}>
+    <ScheduleElementContainer>
       <Image src="https://blog.kakaocdn.net/dn/bvVHDV/btqYIk8ro2Z/EDCkAI9jXb3SMAlISvbWr0/img.jpg" />
       <Wrapper>
         <h3>{title}</h3>
