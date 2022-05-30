@@ -28,6 +28,7 @@ import {
 import OAuth2RedirectHandler from "@routes/oauth";
 import dashboardRoute from "@pages/dashboard";
 import { Provider } from "react-redux";
+import Modal from "@src/components/modal";
 import Navigation from "./components/organisms/navigation";
 import Invite from "./components/pages/invite";
 import { store } from "./app/store";
@@ -43,7 +44,7 @@ const Settlement = lazy(() => import("@pages/settlement"));
 const LiveSchedule = lazy(() => import("@pages/liveSchedule"));
 const Temp = lazy(() => import("@pages/temp"));
 
-function App() {
+const App = () => {
   const queryClient = new QueryClient();
   const [user, setUser] = useState(false);
   const preventClose = (e: BeforeUnloadEvent) => {
@@ -74,7 +75,7 @@ function App() {
       children: [
         {
           index: true,
-          element: <Main setUser={setUser} />,
+          element: <Main />,
         },
         {
           path: KAKAO_CALLBACK_URL,
@@ -174,6 +175,6 @@ function App() {
       </ThemeProvider>
     </Provider>
   );
-}
+};
 
 export default App;

@@ -1,27 +1,15 @@
 import { api } from "@src/app/api";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { ScheduleElement } from "@organisms/scheduleElement";
 import { css } from "@emotion/react";
+import Modal from "@src/components/modal";
 
-function TravelListPage() {
+const TravelListPage = () => {
   const { data: travelsData } = api.useGetTravelsQuery();
-
-  const [createTravel] = api.useCreateTravelMutation();
 
   return (
     <div>
-      <button
-        onClick={() =>
-          createTravel({
-            title: "Test Title",
-            startDate: "2022-05-22",
-            endDate: "2022-05-23",
-            userEmails: [],
-          })
-        }
-      >
-        Create
-      </button>
+      <Link to="add">생성하기</Link>
 
       <div
         css={css`
@@ -46,8 +34,9 @@ function TravelListPage() {
             )
           )}
       </div>
+      <Outlet />
     </div>
   );
-}
+};
 
 export default TravelListPage;
