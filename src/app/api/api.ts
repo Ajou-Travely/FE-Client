@@ -118,7 +118,6 @@ export const api = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
-
     /**
      * Travel Apis
      */
@@ -127,6 +126,13 @@ export const api = baseApi.injectEndpoints({
       query: (travelId) => ({
         url: `${TRAVEL_BASE_URL}/${travelId}/users`,
         method: "GET",
+      }),
+    }),
+
+    getTravelsByUser: builder.query<any, void>({
+      query: () => ({
+        url: `${TRAVEL_BASE_URL}`,
+        method: 'GET',
       }),
     }),
     /**
@@ -210,12 +216,6 @@ export const api = baseApi.injectEndpoints({
     >({
       query: (arg) => ({
         url: `${TRAVEL_BASE_URL}/${arg.travelId}/costs/${arg.costId}`,
-        method: "GET",
-      }),
-    }),
-    getCostByTravelId: builder.query<any, string>({
-      query: (travelId) => ({
-        url: `${TRAVEL_BASE_URL}/${travelId}/costs`,
         method: "GET",
       }),
     }),
