@@ -17,10 +17,11 @@ import {
   Footer,
 } from "./styles";
 import { api } from "@src/app/api/api";
+import travelApi from "@src/app/api/travelApi";
 
 function NewSchedule() {
   const params = useLocation().state as any;
-  const [createTravel, { data }] = api.useCreateTravelMutation();
+  const [createTravel, { data }] = travelApi.useCreateTravelMutation();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date[]>([
     new Date(),

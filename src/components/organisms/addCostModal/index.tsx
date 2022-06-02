@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import Button from "@atoms/button";
 import Chip from "@atoms/chip";
@@ -24,9 +23,13 @@ interface IUser {
   profilePath: null | string;
 }
 
-const NewSettlement = () => {
-  const navigate = useNavigate();
-  const { travelId } = useParams<"travelId">();
+const AddCostModal = ({
+  travelId,
+  isClose,
+}: {
+  travelId: string | undefined;
+  isClose?: () => void;
+}) => {
   const { data: users } = api.useGetUsersQuery(travelId!);
   const [createCost] = api.useCreateCostMutation();
   const [memo, setMemo] = useState("");
@@ -55,7 +58,7 @@ const NewSettlement = () => {
           totalAmount: price as number,
           travelId: travelId as string,
         });
-        navigate("/settlement");
+        isClose !== undefined && isClose();
       }
     } else alert("금액이 맞지 않습니다.");
   };
@@ -117,4 +120,4 @@ const NewSettlement = () => {
   );
 };
 
-export default NewSettlement;
+export default AddCostModal;
