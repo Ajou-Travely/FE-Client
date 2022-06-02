@@ -38,7 +38,6 @@ const Main = lazy(() => import("@pages/landingPage"));
 const SignIn = lazy(() => import("@pages/signIn"));
 const SignUp = lazy(() => import("@pages/signUp"));
 const Admin = lazy(() => import("@pages/admin"));
-const NewSchedule = lazy(() => import("@pages/newSchedule"));
 const Settlement = lazy(() => import("@pages/settlement"));
 const LiveSchedule = lazy(() => import("@pages/liveSchedule"));
 const Temp = lazy(() => import("@pages/temp"));
@@ -102,14 +101,6 @@ const App = () => {
           ),
         },
         {
-          path: "newSchedule",
-          element: (
-            <PrivateRoute user={user}>
-              <NewSchedule />
-            </PrivateRoute>
-          ),
-        },
-        {
           path: "liveSchedule",
           element: (
             <PrivateRoute user={user}>
@@ -132,7 +123,7 @@ const App = () => {
               <MyPage />
             </PrivateRoute>
           ),
-        }
+        },
       ],
     },
     {
