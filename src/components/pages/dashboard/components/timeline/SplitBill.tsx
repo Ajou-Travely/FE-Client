@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import React, { useState } from "react";
 import { BiChevronDown, BiChevronUp, BiX } from "react-icons/bi";
-import { api } from "@src/app/api";
+import { api } from "@src/app/api/api";
 
 function stringToColor(str) {
   let hash = 0;

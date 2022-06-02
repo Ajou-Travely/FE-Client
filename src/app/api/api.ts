@@ -1,14 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "@src/app/store";
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { TRAVEL_BASE_URL, USER_BASE_URL } from "@src/utils/type";
+import { TRAVEL_BASE_URL, USER_BASE_URL } from "@utils/type";
+import baseApi, { IPaginationResponse } from "@src/app/api/baseApi";
 
 interface IUserResponse {
   userId: number;
   userName: string;
 }
 
-interface IScheduleResponse {
+export interface IScheduleResponse {
   scheduleId: number;
   startDate: number;
   endDate: number;
@@ -17,13 +18,10 @@ interface IScheduleResponse {
     placeName: string;
     lat: number;
     lng: number;
+    phoneNumber: string | undefined;
+    addressName: string;
   };
   users: IUserResponse[];
-}
-interface IPaginationResponse<T> {
-  page: number | null;
-  size: number | null;
-  content: T[];
 }
 
 export interface ITravelResponse {
@@ -55,21 +53,7 @@ interface AmountPerUserProps {
   [key: number]: number;
 }
 
-export const api = createApi({
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://api.dev.travely.guide",
-    // baseUrl: "http://192.168.25.117:8080",
-    prepareHeaders: (headers, { getState }) => {
-      // By default, if we have a token in the store, let's use that for authenticated requests
-      const { token } = (getState() as RootState).auth;
-      if (token) {
-        headers.set("Authentication", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
-  keepUnusedDataFor: 0,
-  tagTypes: ["Travel"],
+export const api = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     oauthLogin: builder.mutation<
       {
@@ -138,63 +122,12 @@ export const api = createApi({
     /**
      * Travel Apis
      */
-    getTravels: builder.query<IPaginationResponse<ITravelResponse>, void>({
-      query: () => ({
-        url: TRAVEL_BASE_URL,
-        method: "GET",
-      }),
-      providesTags: (result) => [{ type: "Travel" }],
-    }),
-    createTravel: builder.mutation<
-      any,
-      {
-        title: string;
-        userEmails: string[];
-        startDate: string;
-        endDate: string;
-      }
-    >({
-      query: (arg) => ({
-        method: "POST",
-        url: TRAVEL_BASE_URL,
-        body: {
-          ...arg,
-        },
-      }),
-      invalidatesTags: (result, error) => ["Travel"],
-    }),
-
-    getTravel: builder.query<ITravelResponse, string>({
-      query: (travelId) => ({
-        url: `${TRAVEL_BASE_URL}/${travelId}`,
-        method: "GET",
-      }),
-      providesTags: (result, error, travelId) => [
-        { type: "Travel", id: travelId },
-      ],
-    }),
 
     getUsers: builder.query<any, string>({
       query: (travelId) => ({
         url: `${TRAVEL_BASE_URL}/${travelId}/users`,
         method: "GET",
       }),
-    }),
-    createTravelDate: builder.mutation<
-      any,
-      { travelId: string; date: string; title: string }
-    >({
-      query: ({ travelId, date, title }) => ({
-        url: `${TRAVEL_BASE_URL}/${travelId}/travelDates`,
-        method: "POST",
-        body: {
-          date: date,
-          title: title,
-        },
-      }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Travel", id: arg.travelId },
-      ],
     }),
     /**
      * Schedule Apis
@@ -320,55 +253,11 @@ export const api = createApi({
     }),
     rejectInvite: builder.query<string, string>({
       query: (code) => ({
-        url: `${TRAVEL_BASE_URL}/reject${code}`,
+        url: `${TRAVEL_BASE_URL}/reject/${code}`,
         method: "GET",
       }),
     }),
-    /**
-     * Friends Apis
-     */
-    sendEmail: builder.mutation<void, string>({
-      query: (targetEmail) => ({
-        url: `${USER_BASE_URL}/friends/${targetEmail}`,
-        method: "POST",
-      }),
-    }),
-    getFriends: builder.query<any, void>({
-      query: () => ({
-        url: `${USER_BASE_URL}/friends`,
-        method: "GET",
-      }),
-    }),
-    getGivenRequests: builder.query<any, void>({
-      query: () => ({
-        url: `${USER_BASE_URL}/friends/given-requests`,
-        method: "GET",
-      }),
-    }),
-    getGivingRequests: builder.query<any, void>({
-      query: () => ({
-        url: `${USER_BASE_URL}/friends/giving-requests`,
-        method: "GET",
-      }),
-    }),
-    deleteFriends: builder.mutation<void, number>({
-      query: (targetId) => ({
-        url: `${USER_BASE_URL}/friends/${targetId}`,
-        method: "DELETE",
-      }),
-    }),
-    acceptFriendsRequest: builder.mutation<void, number>({
-      query: (targetId) => ({
-        url: `${USER_BASE_URL}/friends/request/${targetId}`,
-        method: "POST",
-      }),
-    }),
-    rejectFriendsRequest: builder.mutation<void, number>({
-      query: (targetId) => ({
-        url: `${USER_BASE_URL}/friends/request/${targetId}`,
-        method: "DELETE",
-      }),
-    }),
+
   }),
 });
 
