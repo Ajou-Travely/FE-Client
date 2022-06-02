@@ -14,6 +14,7 @@ import { Avartar } from "@src/components/organisms/scheduleElement/styles";
 import styled from "@emotion/styled";
 import { useAppDispatch } from "@src/app/hooks";
 import travelApi from "@src/app/api/travelApi";
+import _ from "lodash";
 import Schedule from "../components/schedule";
 import TextAvatar from "@src/components/atoms/textAvatar";
 
@@ -80,8 +81,6 @@ const TravelEditPage = () => {
         }
       );
 
-      console.log(routeResponse);
-
       return routeResponse.data;
     }
 
@@ -144,7 +143,7 @@ const TravelEditPage = () => {
     [bounds]
   );
 
-  const onMapClicked = useCallback((mouseEvent) => {
+  const onMapClicked = useCallback((target, mouseEvent) => {
     const clickedLat = mouseEvent.latLng?.getLat();
     const clickedLng = mouseEvent.latLng?.getLng();
 
@@ -176,6 +175,14 @@ const TravelEditPage = () => {
     useState(false);
 
   const [createSchedule, result] = api.useCreateScheduleMutation();
+
+  const mouseMoveOnMapEvent = useCallback(
+    _.throttle((target, mouseEvent) => {
+      console.log(mouseEvent.latLng);
+    }, 500),
+    []
+  );
+
   if (!travelData) {
     return <div>Loading...</div>;
   }
@@ -233,6 +240,105 @@ const TravelEditPage = () => {
             정산
           </Button>
         </BtnWarpper>
+        <div
+          css={css`
+            display: flex;
+            flex-direction: row;
+          `}
+        >
+          <button onClick={openCreateDateModal}>open date create modal</button>
+          {createDateModalOpened && (
+            <CreateTravelDateModal
+              travelId={travelId!}
+              onClose={closeCreateDateModal}
+              onSuccess={closeCreateDateModal}
+            />
+          )}
+        </div>
+        <div>{travelData.title}</div>
+        <div>{travelData.users.map((user) => user.userName)}</div>
+        <button
+          onClick={() =>
+            createSchedule({
+              travelId: parseInt(travelId!),
+              date: selectedDate!,
+              place: {
+                placeUrl: "",
+                placeName: "남산타워",
+                addressName: "서울 남산타워",
+                addressRoadName: "aa",
+                lat: 37.5511694,
+                lng: 126.98822659999999,
+                kakaoMapId: 13,
+                phoneNumber: "000",
+              },
+              userIds: [13],
+              endTime: "13:30:07",
+              startTime: "13:30:07",
+            })
+          }
+        >
+          남산타워
+        </button>
+        <button
+          onClick={() =>
+            createSchedule({
+              travelId: parseInt(travelId!),
+              date: selectedDate!,
+              place: {
+                placeUrl: "",
+                placeName: "강남역",
+                addressName: "address",
+                addressRoadName: "강남역",
+                lat: 37.498779319598455,
+                lng: 127.02753687427264,
+                kakaoMapId: 14,
+                phoneNumber: "000",
+              },
+              userIds: [13],
+              endTime: "13:30:07",
+              startTime: "13:30:07",
+            })
+          }
+        >
+          강남역
+        </button>
+        <button
+          onClick={() =>
+            createSchedule({
+              travelId: parseInt(travelId!),
+              date: selectedDate!,
+              place: {
+                placeUrl: "",
+                placeName: "사당역",
+                addressName: "address",
+                addressRoadName: "사당역",
+                lat: 37.47715678758263,
+                lng: 126.98085975641106,
+                kakaoMapId: 15,
+                phoneNumber: "000",
+              },
+              userIds: [13],
+              endTime: "13:30:07",
+              startTime: "13:30:07",
+            })
+          }
+        >
+          사당역
+        </button>
+        <div>
+          {travelData.dates.map((dateData) => (
+            <button
+              key={dateData.date}
+              onClick={(e) => {
+                setSelectedDate(dateData.date);
+              }}
+            >
+              {dateData.date}
+            </button>
+          ))}
+        </div>
+
         {/* <ListProto
           data={selectedDateSchedules}
           updateData={(updatedData: IScheduleResponse[]) => {
@@ -281,6 +387,7 @@ const TravelEditPage = () => {
             lat: travelLocations[0].lnglat[1],
             lng: travelLocations[0].lnglat[0],
           }}
+          onMouseMove={mouseMoveOnMapEvent}
           style={{ width: "100%", height: "100%" }}
         >
           {seletedPosition && (
