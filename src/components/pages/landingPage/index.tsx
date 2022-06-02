@@ -5,8 +5,8 @@ import Board from "@organisms/board";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
-import { Wrapper, SubmitBtn, ArrowImg } from "./styles";
 import { useNavigate } from "react-router-dom";
+import { Wrapper, SubmitBtn, ArrowImg } from "./styles";
 
 // const tempData = {
 //   title: "예비군 동원 훈련",
@@ -189,7 +189,7 @@ import { useNavigate } from "react-router-dom";
 //   );
 // };
 
-function Main() {
+const Main = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (e: any) => {
@@ -199,9 +199,9 @@ function Main() {
     const dayEnd = new Date(e.target.dayEnd.value);
     navigate("/newSchedule", {
       state: {
-        title,
-        dayStart,
-        dayEnd,
+        title: title,
+        dayStart: dayStart,
+        dayEnd: dayEnd,
       },
     });
   };
@@ -226,9 +226,7 @@ function Main() {
         `}
       >
         <img
-          src={
-            "https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
-          }
+          src="https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
           css={css`
             width: 100%;
             max-height: 800px;
@@ -301,18 +299,18 @@ function Main() {
           </Wrapper>
           <Wrapper>
             <p>시작일</p>
-            <input name="dayStart" type={"date"} required />
+            <input name="dayStart" type="date" required />
           </Wrapper>
           <ArrowImg src="/arrow.svg" />
           <Wrapper>
             <p>도착일</p>
-            <input name="dayEnd" type={"date"} required />
+            <input name="dayEnd" type="date" required />
           </Wrapper>
           <SubmitBtn />
         </form>
       </motion.div>
     </div>
   );
-}
+};
 
 export default Main;
