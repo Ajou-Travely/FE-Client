@@ -1,7 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "@src/app/store";
 import { createSelector, createSlice } from "@reduxjs/toolkit";
-import { TRAVEL_BASE_URL, USER_BASE_URL } from "@utils/type";
+import {
+  ADMIN_USER_BASE_URL,
+  TRAVEL_BASE_URL,
+  USER_BASE_URL,
+} from "@utils/type";
 import baseApi, { IPaginationResponse } from "@src/app/api/baseApi";
 
 export interface IUserResponse {
@@ -136,7 +140,7 @@ export const api = baseApi.injectEndpoints({
     }),
     getAllUsers: builder.query<any, void>({
       query: () => ({
-        url: USER_BASE_URL,
+        url: ADMIN_USER_BASE_URL,
         method: "GET",
       }),
     }),
