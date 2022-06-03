@@ -193,8 +193,8 @@ const travelApi = baseApi
             phoneNumber: string;
             placeName: string;
             placeUrl: string;
-            lat: number;
-            lng: number;
+            lat: string;
+            lng: string;
           };
           userIds: number[];
         }
@@ -230,6 +230,25 @@ const travelApi = baseApi
             data: response,
           });
         },
+      }),
+      uploadSchedulePhotos: builder.mutation<
+        string[],
+        {
+          travelId: string;
+          scheduleId: string;
+          photos: any;
+        }
+      >({
+        query: (args) => ({
+          url:
+            TRAVEL_BASE_URL +
+            `/${args.travelId}/schedules/${args.scheduleId}/photos`,
+          method: "POST",
+          body: { photos: args.photos },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }),
       }),
     }),
   });

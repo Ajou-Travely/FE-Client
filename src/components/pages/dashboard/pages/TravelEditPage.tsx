@@ -27,6 +27,7 @@ import socketClient, { Socket } from "socket.io-client";
 import { RootState } from "@src/app/store";
 import { theme } from "@src/styles/theme";
 import SearchModal from "@src/components/organisms/searchModal";
+import ImageFeed from "../components/imageFeed";
 
 const BtnWarpper = styled.div`
   width: 100%;
@@ -304,29 +305,6 @@ const TravelEditPage = () => {
                 />
               )}
             </div>
-            {/* <button
-              onClick={() =>
-                createSchedule({
-                  travelId: travelId!,
-                  date: selectedDate!,
-                  place: {
-                    placeUrl: "",
-                    placeName: "강남역",
-                    addressName: "address",
-                    addressRoadName: "강남역",
-                    lat: 37.498779319598455,
-                    lng: 127.02753687427264,
-                    kakaoMapId: 14,
-                    phoneNumber: "000",
-                  },
-                  userIds: [13],
-                  endTime: "13:30:07",
-                  startTime: "13:30:07",
-                })
-              }
-            >
-              강남역
-            </button> */}
             <div
               css={css`
                 width: 30vw;
@@ -428,6 +406,9 @@ const TravelEditPage = () => {
               </div>
             </div>
           </>
+        )}
+        {type === "image" && (
+          <ImageFeed travelId={travelId} travelData={travelData} />
         )}
         {type === "settlement" && (
           <SplitBill costData={travelData.costs} travelId={travelId} />

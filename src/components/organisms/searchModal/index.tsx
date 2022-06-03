@@ -41,35 +41,23 @@ const SearchModal = ({
   const handleCreateSchedule = () => {
     if (targetAddress === undefined) return;
     console.log(targetAddress);
-    const geocoder = new kakao.maps.services.Geocoder();
-    geocoder.transCoord(
-      Number(targetAddress.x),
-      Number(targetAddress.y),
-      (result, status) => {
-        if (status === kakao.maps.services.Status.OK)
-          createSchedule({
-            travelId: travelId!,
-            date: selectedDate!,
-            place: {
-              placeUrl: targetAddress.place_url,
-              placeName: targetAddress.place_name,
-              addressName: targetAddress.address_name,
-              addressRoadName: targetAddress.road_address_name,
-              lat: result[0].y,
-              lng: result[0].x,
-              kakaoMapId: Number(targetAddress.id),
-              phoneNumber: targetAddress.phone,
-            },
-            userIds: [13],
-            endTime: "13:30:07",
-            startTime: "13:30:07",
-          });
+    createSchedule({
+      travelId: travelId!,
+      date: selectedDate!,
+      place: {
+        placeUrl: targetAddress.place_url,
+        placeName: targetAddress.place_name,
+        addressName: targetAddress.address_name,
+        addressRoadName: targetAddress.road_address_name,
+        lat: targetAddress.y,
+        lng: targetAddress.x,
+        kakaoMapId: Number(targetAddress.id),
+        phoneNumber: targetAddress.phone,
       },
-      {
-        input_coord: kakao.maps.services.Coords.WTM,
-        output_coord: kakao.maps.services.Coords.WGS84,
-      }
-    );
+      userIds: [13],
+      endTime: "13:30:07",
+      startTime: "13:30:07",
+    });
   };
 
   useEffect(() => {
