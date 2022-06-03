@@ -25,7 +25,6 @@ export interface IScheduleResponse {
   users: IUserResponse[];
 }
 
-
 interface ICostResponse {
   id: number;
   title: string;
@@ -268,6 +267,11 @@ export const authSlice = createSlice({
 });
 
 export const isLoginSelector = createSelector(
+  (state: RootState) => state.auth.token,
+  (token) => token !== null
+);
+
+export const isAdminLoginSelector = createSelector(
   (state: RootState) => state.auth.token,
   (token) => token !== null
 );
