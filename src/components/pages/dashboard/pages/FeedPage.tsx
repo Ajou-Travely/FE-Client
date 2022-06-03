@@ -1,6 +1,9 @@
 import styled from "@emotion/styled";
 import postApi from "@src/app/api/postApi";
 import {Swiper, SwiperSlide} from "swiper/react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { IPageRequest, IPostResponse } from "@src/app/api/api";
+import { useEffect, useState } from "react";
 
 const FeedsContainer = styled.div`
   width: 100%;
@@ -48,38 +51,67 @@ const PostImage = styled.div<{img:string}>`
   background-position: center;
   background-size: cover;
   margin: 3px;
-`
+`;
 
 function FeedPage() {
-  const { data: postsData } = postApi.useGetPostsOfFriendsQuery();
+  var pageNumber = 0;
+  const pageRequest:IPageRequest = {
+    pageSize: 10,
+    pageNumber: pageNumber++
+  };
+  // const [posts, setPosts] = useState([
+  // ]);
+  const postsData = postApi.useGetPostsOfFriendsQuery(pageRequest).data?.content;
+
+  useEffect(() => {
+
+  }, []);
+  // setPosts(postsData == undefined ? [] : postsData.content);
+
+  const fetchMoreData = () => {
+    setTimeout(() => {
+      const newPageRequeset:IPageRequest = {
+        pageSize: 10,
+        pageNumber: pageNumber++
+      };
+      postsData?.concat(postApi.useGetPostsOfFriendsQuery(pageRequest).data?.content as IPostResponse[]);
+    }, 1500);
+  };
+
   return (
     <FeedsContainer>
-      {postsData?.content !== undefined && 
-      postsData?.content.map(({postId, scheduleId, userInfo, title, text, comments, photoInfos}) => (
-        <FeedContainer>
-          <UserProfileRow>
-            <UserProfileImage img={userInfo.profilePath}/>
-            <UserInfo>
-              {userInfo.userName}
-            </UserInfo>
-          </UserProfileRow>
-          <Swiper
-          spaceBetween={10}
-          slidesPerView={1}
-          scrollbar={{draggable: true}}
-          navigation
-          pagination={{clickable:true}}>
-            {
-              photoInfos.map(({name})=>(
-                <SwiperSlide>
-                  <PostImage img={name}/>
-                </SwiperSlide>
-              ))
-            }
-          </Swiper>
-          <p>{text}</p>
-        </FeedContainer>
-      ))}
+      <InfiniteScroll
+      dataLength={postsData?.length as number}
+      next={fetchMoreData}
+      hasMore={true}
+      loader={<h4>Loading...</h4>}>
+        {postsData !== undefined && 
+        postsData.map(({postId, scheduleId, userInfo, title, text,  comments, photoInfos}) => (
+          <FeedContainer>
+            <UserProfileRow>
+              <UserProfileImage img={userInfo.profilePath}/>
+              <UserInfo>
+                {userInfo.userName}
+              </UserInfo>
+            </UserProfileRow>
+            <Swiper
+            spaceBetween={10}
+            slidesPerView={1}
+            scrollbar={{draggable: true}}
+            navigation
+            pagination={{clickable:true}}>
+              {
+                photoInfos.map(({name})=>(
+                  <SwiperSlide>
+                    <PostImage img={name}/>
+                  </SwiperSlide>
+                ))
+              }
+            </Swiper>
+            <p>{text}</p>
+          </FeedContainer>
+        ))}
+      </InfiniteScroll>
     </FeedsContainer>
   );
 }

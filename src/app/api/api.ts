@@ -47,6 +47,11 @@ export interface IPostResponse {
   photoInfos: IPhotoResponse[];
 }
 
+export interface IPageRequest {
+  pageSize: number;
+  pageNumber: number;
+}
+
 interface ICommentResponse{
   commentId: number;
   userInfo: IUserResponse;
