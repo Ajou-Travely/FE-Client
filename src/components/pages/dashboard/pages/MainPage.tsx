@@ -6,7 +6,7 @@ import { Avatar, AvatarGroup } from "@pages/liveSchedule";
 import travelApi from "@src/app/api/travelApi";
 import ScheduleElement from "@organisms/scheduleElement";
 
-const PopularPlace = ({
+export const PopularPlace = ({
   title,
   address,
 }: {
