@@ -142,27 +142,10 @@ const ListProto = ({
   data: outerData,
   updateData,
 }: {
-  travelId: string
+  travelId: string;
   data: any[];
   updateData: (newData: any) => void;
 }) => {
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchResult, setSearchResult] =
-    useState<kakao.maps.services.PlacesSearchResult>();
-
-  useEffect(() => {
-    if (searchKeyword === "") {
-      setSearchResult(undefined);
-    }
-
-    const ps = new kakao.maps.services.Places();
-    ps.keywordSearch(searchKeyword, (data, status, _pagination) => {
-      if (status === kakao.maps.services.Status.OK) {
-        setSearchResult(data);
-      }
-    });
-  }, [searchKeyword]);
-
   const [isGrabbed, setIsGrabbed] = useState(false);
 
   const [internalData, setInternalData] = useState(outerData);
@@ -181,7 +164,9 @@ const ListProto = ({
       css={css`
         background: white;
         display: flex;
+        height: 50vh;
         flex-grow: 1;
+        padding: 1rem;
       `}
     >
       <Reorder.Group
@@ -242,25 +227,6 @@ const ListProto = ({
             />
           </Reorder.Item>
         ))}
-        <div
-          css={css`
-            margin-left: 30px;
-            margin-top: 10px;
-          `}
-        >
-          <input
-            type="text"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-          />
-
-          <div>
-            {searchResult &&
-              searchResult.map((result) => {
-                return <div>{result.place_name}</div>;
-              })}
-          </div>
-        </div>
       </Reorder.Group>
     </div>
   );

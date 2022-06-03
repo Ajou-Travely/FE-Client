@@ -27,7 +27,7 @@ const SplitBill = ({ costData, travelId }: Props) => {
           width: 100%;
           position: relative;
           align-items: center;
-          height: 60vh;
+          height: 100%;
         `}
       >
         <div
@@ -58,7 +58,7 @@ const SplitBill = ({ costData, travelId }: Props) => {
           css={css`
             display: flex;
             position: absolute;
-            bottom: 0px;
+            bottom: 1rem;
             justify-content: center;
             background: white;
             cursor: pointer;

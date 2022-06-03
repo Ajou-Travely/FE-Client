@@ -27,7 +27,7 @@ const ScheduleWrapper = styled.div`
 
 const ScheduleElementContainer = styled.div`
   border-radius: 10px;
-  min-width: 20vw;
+  max-width: 20vw;
   height: 100%;
   box-shadow: 0px 0px 3px ${theme.colors.shadow};
 `;
