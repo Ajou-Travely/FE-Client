@@ -1,6 +1,12 @@
 import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
 import { travelLocations } from "@pages/liveSchedule/dummyData";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import InnerDashBoard from "@organisms/dashBoard/inner";
 import { css } from "@emotion/react";
 import LabelBtn from "@src/components/atoms/button/label";
@@ -13,6 +19,11 @@ import CreateTravelDateModal from "@pages/dashboard/CreateTravelDateModal";
 import { Avartar } from "@src/components/organisms/scheduleElement/styles";
 import styled from "@emotion/styled";
 import { useAppDispatch } from "@src/app/hooks";
+import travelApi from "@src/app/api/travelApi";
+import _ from "lodash";
+import TextAvatar from "@src/components/atoms/textAvatar";
+import socketClient, { Socket } from "socket.io-client";
+import { RootState } from "@src/app/store";
 
 const BtnWarpper = styled.div`
   width: 100%;
@@ -30,15 +41,21 @@ const Button = styled.button<{ state: boolean }>`
   }
 `;
 
+const dummyCenter = {
+  lat: 37.49091340540493,
+  lng: 127.03337782299037,
+};
+
 const TravelEditPage = () => {
-  const [type, setType] = useState<"schedule" | "image" | "settlement">(
-    "schedule"
-  );
+  const { travelId } = useParams<"travelId">();
+
   const dispatch = useAppDispatch();
 
-  const { travelId } = useParams<"travelId">();
-  const { data: travelData } = api.useGetTravelQuery(travelId!);
-  const [updateScheduleOrder] = api.useChangeTravelScheduleOrderMutation();
+  const [type, setType] = useState("schedule");
+
+  const { data: travelData } = travelApi.useGetTravelQuery(travelId!);
+  const [updateScheduleOrder] =
+    travelApi.useChangeTravelScheduleOrderMutation();
 
   const [map, setMap] = useState<any>();
 
@@ -53,7 +70,12 @@ const TravelEditPage = () => {
 
     if (!selectedDateData) return [];
 
-    return selectedDateData.schedules;
+    return selectedDateData.scheduleOrders.map(
+      (scheduleId) =>
+        selectedDateData.schedules.find(
+          (schedule) => schedule.scheduleId === scheduleId
+        )!
+    );
   }, [travelData, selectedDate]);
 
   /**
@@ -76,8 +98,6 @@ const TravelEditPage = () => {
         }
       );
 
-      console.log(routeResponse);
-
       return routeResponse.data;
     }
 
@@ -87,10 +107,10 @@ const TravelEditPage = () => {
       const destination = selectedDateSchedules[i + 1];
       promises.push(
         getRoute(
-          origin.place.lat,
-          origin.place.lng,
-          destination.place.lat,
-          destination.place.lng
+          origin?.place.lat,
+          origin?.place.lng,
+          destination?.place.lat,
+          destination?.place.lng
         )
       );
     }
@@ -105,7 +125,7 @@ const TravelEditPage = () => {
         }))
       );
     });
-  }, [travelData]);
+  }, [selectedDateSchedules]);
 
   const [seletedPosition, setSelectedPosition] = useState<
     { lat: number; lng: number } | undefined
@@ -118,12 +138,13 @@ const TravelEditPage = () => {
     const latlngbounds = new kakao.maps.LatLngBounds();
 
     selectedDateSchedules.forEach((travelLocation) => {
-      latlngbounds.extend(
-        new kakao.maps.LatLng(
-          travelLocation.place.lat,
-          travelLocation.place.lng
-        )
-      );
+      travelLocation !== undefined &&
+        latlngbounds.extend(
+          new kakao.maps.LatLng(
+            travelLocation?.place.lat,
+            travelLocation?.place.lng
+          )
+        );
     });
 
     return latlngbounds;
@@ -140,7 +161,7 @@ const TravelEditPage = () => {
     [bounds]
   );
 
-  const onMapClicked = useCallback((mouseEvent) => {
+  const onMapClicked = useCallback((target, mouseEvent) => {
     const clickedLat = mouseEvent.latLng?.getLat();
     const clickedLng = mouseEvent.latLng?.getLng();
 
@@ -152,7 +173,6 @@ const TravelEditPage = () => {
     }
   }, []);
 
-  const [innerDashBoardOnOff, setInnerDashBoardOnOff] = useState(false);
   const [markers, setMarkers] = useState<any[]>([]);
   function deleteMarker() {
     markers.map((v) => v.setMap(null));
@@ -172,7 +192,15 @@ const TravelEditPage = () => {
   const [createSplitBillModalOpened, setCreateSplitBillModalOpened] =
     useState(false);
 
-  const [createSchedule, result] = api.useCreateScheduleMutation();
+  const [createSchedule, result] = travelApi.useCreateScheduleMutation();
+
+  const mouseMoveOnMapEvent = useCallback(
+    _.throttle((target, mouseEvent) => {
+      console.log(mouseEvent.latLng);
+    }, 500),
+    []
+  );
+
   if (!travelData) {
     return <div>Loading...</div>;
   }
@@ -181,7 +209,6 @@ const TravelEditPage = () => {
     <div
       css={css`
         height: 100%;
-
         display: flex;
         flex-direction: row;
       `}
@@ -190,7 +217,7 @@ const TravelEditPage = () => {
         css={css`
           display: flex;
           flex-direction: column;
-
+          width: 28vw;
           background: white;
         `}
       >
@@ -209,28 +236,33 @@ const TravelEditPage = () => {
               justify-content: flex-end;
             `}
           >
-            <Avartar />
-            <Avartar />
-            <Avartar />
-            <Avartar />
+            {travelData.users.map(({ userId, userName }) => (
+              <TextAvatar key={userId} name={userName} />
+            ))}
           </div>
         </div>
         <BtnWarpper>
-          <Button
-            state={type === "schedule"}
-            onClick={() => setType("schedule")}
-          >
-            일정
-          </Button>
-          <Button state={type === "image"} onClick={() => setType("image")}>
-            사진
-          </Button>
-          <Button
-            state={type === "settlement"}
-            onClick={() => setType("settlement")}
-          >
-            정산
-          </Button>
+          {[
+            {
+              type: "schedule",
+              title: "일정",
+            },
+            {
+              type: "image",
+              title: "사진",
+            },
+            {
+              type: "settlement",
+              title: "정산",
+            },
+          ].map((info) => (
+            <Button
+              state={type === info.type}
+              onClick={() => setType(info.type)}
+            >
+              {info.title}
+            </Button>
+          ))}
         </BtnWarpper>
         <div
           css={css`
@@ -252,48 +284,71 @@ const TravelEditPage = () => {
         <button
           onClick={() =>
             createSchedule({
-              travelId: parseInt(travelId!),
-              date: "2022-05-09",
+              travelId: travelId!,
+              date: selectedDate!,
               place: {
                 placeUrl: "",
-                placeName: "222222",
-                addressName: "address",
+                placeName: "남산타워",
+                addressName: "서울 남산타워",
                 addressRoadName: "aa",
                 lat: 37.5511694,
                 lng: 126.98822659999999,
-                kakaoMapId: 2,
+                kakaoMapId: 13,
                 phoneNumber: "000",
               },
-              userIds: [1],
+              userIds: [13],
               endTime: "13:30:07",
               startTime: "13:30:07",
             })
           }
         >
-          create schedule 1
+          남산타워
         </button>
         <button
           onClick={() =>
             createSchedule({
-              travelId: parseInt(travelId!),
-              date: "2022-05-09",
+              travelId: travelId!,
+              date: selectedDate!,
               place: {
                 placeUrl: "",
-                placeName: "3333",
+                placeName: "강남역",
                 addressName: "address",
-                addressRoadName: "aa",
-                lat: 37.5511694,
-                lng: 126.98822659999999,
-                kakaoMapId: 3,
+                addressRoadName: "강남역",
+                lat: 37.498779319598455,
+                lng: 127.02753687427264,
+                kakaoMapId: 14,
                 phoneNumber: "000",
               },
-              userIds: [1],
+              userIds: [13],
               endTime: "13:30:07",
               startTime: "13:30:07",
             })
           }
         >
-          create schedule 2
+          강남역
+        </button>
+        <button
+          onClick={() =>
+            createSchedule({
+              travelId: travelId!,
+              date: selectedDate!,
+              place: {
+                placeUrl: "",
+                placeName: "사당역",
+                addressName: "address",
+                addressRoadName: "사당역",
+                lat: 37.47715678758263,
+                lng: 126.98085975641106,
+                kakaoMapId: 15,
+                phoneNumber: "000",
+              },
+              userIds: [13],
+              endTime: "13:30:07",
+              startTime: "13:30:07",
+            })
+          }
+        >
+          사당역
         </button>
         <div>
           {travelData.dates.map((dateData) => (
@@ -308,23 +363,35 @@ const TravelEditPage = () => {
           ))}
         </div>
 
-        <ListProto
-          data={selectedDateSchedules}
-          updateData={(updatedData: IScheduleResponse[]) => {
-            console.log("Outer Update Data", updatedData);
-            updateScheduleOrder({
-              travelId: travelId!,
-              date: selectedDate!,
-              scheduleOrder: updatedData.map((data) => data.scheduleId),
-            });
-            dispatch(
-              api.util.updateQueryData("getTravel", travelId!, (draft) => {
-                draft.dates.find((date) => date.date === selectedDate)!.schedules = updatedData;
-              })
-            );
-          }}
-        />
-        <SplitBill />
+        {type === "schedule" && (
+          // <Schedule travelData={travelData} travelId={travelId} />
+          <ListProto
+            travelId={travelId!}
+            data={selectedDateSchedules}
+            updateData={(updatedData: IScheduleResponse[]) => {
+              console.log("Outer Update Data", updatedData);
+              updateScheduleOrder({
+                travelId: travelId!,
+                date: selectedDate!,
+                scheduleOrder: updatedData.map((data) => data.scheduleId),
+              });
+              dispatch(
+                travelApi.util.updateQueryData(
+                  "getTravel",
+                  travelId!,
+                  (draft) => {
+                    draft.dates.find(
+                      (date) => date.date === selectedDate
+                    )!.schedules = updatedData;
+                  }
+                )
+              );
+            }}
+          />
+        )}
+        {type === "settlement" && (
+          <SplitBill costData={travelData.costs} travelId={travelId} />
+        )}
       </div>
       <div
         css={css`
@@ -332,48 +399,7 @@ const TravelEditPage = () => {
           flex-direction: row;
           position: relative;
         `}
-      >
-        {/* <DashBoard */}
-        {/*  map={map} */}
-        {/*  travelId={travelId} */}
-        {/*  setMarkers={setMarkers} */}
-        {/*  deleteMarker={deleteMarker} */}
-        {/*  setInnerDashBoardOnOff={setInnerDashBoardOnOff} */}
-        {/* /> */}
-        {innerDashBoardOnOff && (
-          <InnerDashBoard
-            travelData={travelData}
-            type={type}
-            map={map}
-            setMarkers={setMarkers}
-            deleteMarker={deleteMarker}
-          />
-        )}
-
-        {innerDashBoardOnOff && (
-          <div
-            css={css`
-              position: absolute;
-              right: -2rem;
-              z-index: 3;
-            `}
-          >
-            <LabelBtn
-              url="/cancel.svg"
-              onClick={() => {
-                setInnerDashBoardOnOff(false);
-                deleteMarker();
-              }}
-            />
-            <LabelBtn url="/search.svg" onClick={() => setType("search")} />
-            <LabelBtn
-              url="/recommend.svg"
-              onClick={() => setType("recommend")}
-            />
-          </div>
-        )}
-      </div>
-
+      />
       <div
         css={css`
           flex-grow: 1;
@@ -382,10 +408,8 @@ const TravelEditPage = () => {
         <Map
           onCreate={onMapCreated}
           onClick={onMapClicked}
-          center={{
-            lat: travelLocations[0].lnglat[1],
-            lng: travelLocations[0].lnglat[0],
-          }}
+          center={dummyCenter}
+          onMouseMove={mouseMoveOnMapEvent}
           style={{ width: "100%", height: "100%" }}
         >
           {seletedPosition && (
@@ -393,19 +417,17 @@ const TravelEditPage = () => {
               position={seletedPosition}
             />
           )}
-
           {selectedDateSchedules.map((schedule) => (
             <MapMarker // 마커를 생성합니다
               position={{
                 // 마커가 표시될 위치입니다
-                lat: schedule.place.lat,
-                lng: schedule.place.lng,
+                lat: schedule?.place.lat ?? 0,
+                lng: schedule?.place.lng ?? 0,
               }}
             >
-              <div>{schedule.place.placeName}</div>
+              <div>{schedule?.place.placeName}</div>
             </MapMarker>
           ))}
-
           {routeInfos &&
             routeInfos.map((routeInfo) => (
               <Polyline

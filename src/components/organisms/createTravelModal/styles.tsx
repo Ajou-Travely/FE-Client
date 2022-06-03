@@ -2,13 +2,12 @@ import styled from "@emotion/styled";
 import { FlexDiv } from "@src/styles";
 import { theme } from "@src/styles/theme";
 const Container = styled(FlexDiv)`
-  width: 60%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 50vw;
+  z-index: 999;
+  background: white;
   padding: 3rem;
   box-sizing: border-box;
+  box-shadow: 0px 0px 6px ${theme.colors.shadow};
   min-height: 60vh;
   box-sizing: border-box;
   justify-content: space-between;
@@ -19,6 +18,7 @@ const Container = styled(FlexDiv)`
 
 const SubContainer = styled.div`
   border-radius: 5px;
+  width: 100%;
   padding: 2rem;
   box-shadow: 0px 0px 3px ${theme.colors.shadow};
 `;
@@ -31,7 +31,8 @@ const ChipWrapper = styled.div`
 
 const FormWrapper = styled.div`
   min-height: 60vh;
-  padding: 4vw;
+  width: 100%;
+  padding: 2vw;
   box-sizing: border-box;
 `;
 

@@ -11,7 +11,7 @@ import { ThemeProvider, Global, css } from "@emotion/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { theme } from "@styles/theme";
-import reset from "@styles/global";
+import normalize from "@styles/normalize";
 import PrivateRoute from "@routes/private";
 import PublicRoute from "@routes/public";
 import AdminRoute from "@routes/admin";
@@ -32,17 +32,16 @@ import Modal from "@src/components/modal";
 import Navigation from "./components/organisms/navigation";
 import Invite from "./components/pages/invite";
 import { store } from "./app/store";
-import NewSettlement from "./components/pages/newSettlement";
 import OauthSignUp from "./components/pages/signUp/kakao";
 
 const Main = lazy(() => import("@pages/landingPage"));
 const SignIn = lazy(() => import("@pages/signIn"));
 const SignUp = lazy(() => import("@pages/signUp"));
 const Admin = lazy(() => import("@pages/admin"));
-const NewSchedule = lazy(() => import("@pages/newSchedule"));
 const Settlement = lazy(() => import("@pages/settlement"));
 const LiveSchedule = lazy(() => import("@pages/liveSchedule"));
 const Temp = lazy(() => import("@pages/temp"));
+const MyPage = lazy(() => import("@pages/myPage"));
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -102,22 +101,6 @@ const App = () => {
           ),
         },
         {
-          path: "newSettlement/:travelId",
-          element: (
-            <PrivateRoute user={user}>
-              <NewSettlement />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "newSchedule",
-          element: (
-            <PrivateRoute user={user}>
-              <NewSchedule />
-            </PrivateRoute>
-          ),
-        },
-        {
           path: "liveSchedule",
           element: (
             <PrivateRoute user={user}>
@@ -132,6 +115,14 @@ const App = () => {
         {
           path: "/invite/accept/:id",
           element: <Invite />,
+        },
+        {
+          path: "/mypage",
+          element: (
+            <PrivateRoute user={user}>
+              <MyPage />
+            </PrivateRoute>
+          ),
         },
       ],
     },
@@ -151,7 +142,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <Global styles={reset} />
+        <Global styles={normalize} />
         <Global
           styles={css`
             * {

@@ -4,7 +4,7 @@ import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { TRAVEL_BASE_URL, USER_BASE_URL } from "@utils/type";
 import baseApi, { IPaginationResponse } from "@src/app/api/baseApi";
 
-interface IUserResponse {
+export interface IUserResponse {
   userId: number;
   userName: string;
   profilePath: string;
@@ -12,8 +12,8 @@ interface IUserResponse {
 
 export interface IScheduleResponse {
   scheduleId: number;
-  startDate: number;
-  endDate: number;
+  startTime: number;
+  endTime: number;
   place: {
     placeId: number;
     placeName: string;
@@ -25,19 +25,6 @@ export interface IScheduleResponse {
   users: IUserResponse[];
 }
 
-export interface ITravelResponse {
-  id: number;
-  title: string;
-  startDate: string;
-  endDate: string;
-  memo: string;
-  managerId: number;
-  users: IUserResponse[];
-  dates: {
-    date: string;
-    schedules: IScheduleResponse[];
-  }[];
-}
 
 interface ICostResponse {
   id: number;
@@ -140,7 +127,14 @@ export const api = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
-
+    updateMyInfo: builder.mutation<void, any>({
+      query: (args) => ({
+        url: USER_BASE_URL,
+        method: "PUT",
+        body: args,
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
+    }),
     /**
      * Travel Apis
      */
@@ -151,50 +145,16 @@ export const api = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    getTravelsByUser: builder.query<any, void>({
+      query: () => ({
+        url: `${TRAVEL_BASE_URL}`,
+        method: "GET",
+      }),
+    }),
     /**
      * Schedule Apis
      */
-    createSchedule: builder.mutation<
-      any,
-      {
-        travelId: number;
-        date: string;
-        endTime: "13:30:07";
-        startTime: "13:30:07";
-        place: {
-          addressName: string;
-          addressRoadName: string;
-          kakaoMapId: number;
-          phoneNumber: string;
-          placeName: string;
-          placeUrl: string;
-          lat: number;
-          lng: number;
-        };
-        userIds: number[];
-      }
-    >({
-      query: (arg) => ({
-        url: `${TRAVEL_BASE_URL}/${arg.travelId}/schedules`,
-        method: "POST",
-        params: {
-          date: arg.date,
-        },
-        body: {
-          endTime: arg.endTime,
-          place: arg.place,
-          startTime: arg.startTime,
-          userIds: arg.userIds,
-        },
-      }),
-    }),
-    getSchedule: builder.query<any[], string>({
-      query: (arg) => ({
-        url: `${TRAVEL_BASE_URL}/${arg}/schedules`,
-        method: "GET",
-      }),
-      // providesTags: ["schedule"],
-    }),
     updateSchedule: builder.mutation<
       any,
       {
@@ -232,12 +192,6 @@ export const api = baseApi.injectEndpoints({
     >({
       query: (arg) => ({
         url: `${TRAVEL_BASE_URL}/${arg.travelId}/costs/${arg.costId}`,
-        method: "GET",
-      }),
-    }),
-    getCostByTravelId: builder.query<any, string>({
-      query: (travelId) => ({
-        url: `${TRAVEL_BASE_URL}/${travelId}/costs`,
         method: "GET",
       }),
     }),
@@ -279,7 +233,6 @@ export const api = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
-
   }),
 });
 

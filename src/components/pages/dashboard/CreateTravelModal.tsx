@@ -112,7 +112,12 @@ const CreateTravelModal: React.FC<ICreateTravelModalProps> = ({
             />
           </div>
 
-          <Calendar selectRange returnValue={"range"} value={dateRange} onChange={(v) => setDateRange(v)}/>
+          <Calendar
+            selectRange
+            returnValue={"range"}
+            value={dateRange}
+            onChange={(v) => setDateRange(v)}
+          />
           <div
             css={css`
               display: flex;

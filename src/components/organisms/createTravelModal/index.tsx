@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Button from "@atoms/button";
@@ -7,8 +7,6 @@ import SelectDate from "@organisms/scheduleForm/selectDate";
 import SelectTitle from "@src/components/organisms/scheduleForm/selectTitle";
 import AddParty from "@organisms/scheduleForm/addParty";
 
-import { FlexDiv } from "@src/styles";
-
 import {
   Container,
   ChipWrapper,
@@ -16,16 +14,13 @@ import {
   SubContainer,
   Footer,
 } from "./styles";
-import { api } from "@src/app/api/api";
+import travelApi from "@src/app/api/travelApi";
 
-function NewSchedule() {
+function CreateTravelModal({ onSuccess }: { onSuccess: () => void }) {
   const params = useLocation().state as any;
-  const [createTravel, { data }] = api.useCreateTravelMutation();
+  const [createTravel, { data }] = travelApi.useCreateTravelMutation();
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState<Date[]>([
-    new Date(),
-    new Date(),
-  ]);
+  const [dateRange, setDateRange] = useState<any>([new Date(), new Date()]);
   const [countChip, setCountChip] = useState(0);
   const [title, setTitle] = useState("");
   const [userEmails, setUserEmails] = useState<string[]>([]);
@@ -44,18 +39,19 @@ function NewSchedule() {
   const handleNext = () =>
     handleEmptyTitle && setCountChip(Math.min(2, countChip + 1));
   const goNextPage = async () => {
-    const [startDate, endDate] = selectedDate;
+    const [startDate, endDate] = dateRange;
     createTravel({
       startDate: setDateFormat(startDate),
       endDate: setDateFormat(endDate),
       title,
       userEmails,
     });
+    onSuccess();
   };
 
   useEffect(() => {
     if (!params) return;
-    setSelectedDate([params?.dayStart, params?.dayEnd]);
+    setDateRange([params?.dayStart, params?.dayEnd]);
     setCountChip(2);
     setTitle(params?.title);
   }, [params]);
@@ -75,10 +71,7 @@ function NewSchedule() {
         </ChipWrapper>
         <FormWrapper>
           {countChip === 0 && (
-            <SelectDate
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-            />
+            <SelectDate dateRange={dateRange} setDateRange={setDateRange} />
           )}
           {countChip === 1 && <SelectTitle title={title} setTitle={setTitle} />}
           {countChip === 2 && (
@@ -98,4 +91,4 @@ function NewSchedule() {
   );
 }
 
-export default NewSchedule;
+export default CreateTravelModal;

@@ -3,14 +3,12 @@ import { FlexDiv } from "@src/styles";
 import { theme } from "@src/styles/theme";
 
 const Container = styled(FlexDiv)`
-  width: 60%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  background: white;
+  box-shadow: 0px 0px 3px ${theme.colors.shadow};
+  border-radius: 10px;
   padding: 3rem;
   box-sizing: border-box;
-  min-height: 60vh;
+  min-height: 50vh;
   box-sizing: border-box;
   justify-content: space-between;
   button {
@@ -29,7 +27,7 @@ const ChipWrapper = styled.div`
 `;
 
 const FormWrapper = styled.div`
-  min-height: 60vh;
+  min-height: 40vh;
   padding: 4vw;
   box-sizing: border-box;
 `;
