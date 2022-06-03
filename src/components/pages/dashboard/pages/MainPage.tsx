@@ -62,7 +62,9 @@ const MainPage = () => {
   return (
     <div
       css={css`
+        width: 100%;
         padding: 24px;
+        box-sizing: border-box;
         display: flex;
         gap: 24px;
         flex-direction: column;
