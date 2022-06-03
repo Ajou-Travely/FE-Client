@@ -134,10 +134,15 @@ export const api = baseApi.injectEndpoints({
         headers: { "Content-Type": "multipart/form-data" },
       }),
     }),
+    getAllUsers: builder.query<any, void>({
+      query: () => ({
+        url: USER_BASE_URL,
+        method: "GET",
+      }),
+    }),
     /**
      * Travel Apis
      */
-
     getUsers: builder.query<any, string>({
       query: (travelId) => ({
         url: `${TRAVEL_BASE_URL}/${travelId}/users`,
