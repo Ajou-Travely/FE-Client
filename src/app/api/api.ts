@@ -2,6 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { RootState } from "@src/app/store";
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import {
+  ADMIN_EVENT_BASE_URL,
+  ADMIN_NOTICE_BASE_URL,
+  ADMIN_POST_BASE_URL,
   ADMIN_USER_BASE_URL,
   TRAVEL_BASE_URL,
   USER_BASE_URL,
@@ -138,9 +141,32 @@ export const api = baseApi.injectEndpoints({
         headers: { "Content-Type": "multipart/form-data" },
       }),
     }),
+
+    /**
+     * Admin Apis
+     */
+
     getAllUsers: builder.query<any, void>({
       query: () => ({
         url: ADMIN_USER_BASE_URL,
+        method: "GET",
+      }),
+    }),
+    getAllPosts: builder.query<any, void>({
+      query: () => ({
+        url: ADMIN_POST_BASE_URL,
+        method: "GET",
+      }),
+    }),
+    getAllNotices: builder.query<any, void>({
+      query: () => ({
+        url: ADMIN_NOTICE_BASE_URL,
+        method: "GET",
+      }),
+    }),
+    getAllEvents: builder.query<any, void>({
+      query: () => ({
+        url: ADMIN_EVENT_BASE_URL,
         method: "GET",
       }),
     }),
