@@ -1,24 +1,8 @@
-import {
-  Link,
-  Navigate,
-  NavLink,
-  Outlet,
-  useMatch,
-  useNavigate,
-} from "react-router-dom";
+import { Link, NavLink, Outlet, useMatch, useNavigate } from "react-router-dom";
 import TravelListPage from "@pages/dashboard/pages/TravelListPage";
 import { css } from "@emotion/react";
 import { Logo } from "@src/components/logo";
-import {
-  BiBell,
-  BiBookAlt,
-  BiCertification,
-  BiGridAlt,
-  BiHomeAlt,
-  BiLogOut,
-  BiMapAlt,
-  BiUserCircle,
-} from "react-icons/bi";
+import { BiHomeAlt } from "react-icons/bi";
 import { motion } from "framer-motion";
 import { Avatar } from "@pages/liveSchedule";
 import styled from "@emotion/styled";
@@ -30,8 +14,6 @@ import FeedPage from "@pages/dashboard/pages/FeedPage";
 import EventPage from "@pages/dashboard/pages/EventPage";
 import NoticePage from "@pages/dashboard/pages/NoticePage";
 import TravelEditPage from "@pages/dashboard/pages/TravelEditPage";
-import Modal from "@src/components/modal";
-import CreateTravelModal from "@pages/dashboard/CreateTravelModal";
 import travelApi from "@src/app/api/travelApi";
 import TextAvatar from "@src/components/atoms/textAvatar";
 
@@ -97,7 +79,8 @@ const SideBarMenu = ({
   );
 };
 
-const SideBar = () => {
+const SideBar = ({ type }) => {
+  const tabs = type === "dashboard" ? DASHBOARD_TAB : ADMIN_TAB;
   return (
     <div
       css={css`
@@ -130,36 +113,12 @@ const SideBar = () => {
           align-content: stretch;
         `}
       >
-        <SideBarMenu toPath="/dashboard">
-          <BiHomeAlt size={24} style={{ marginRight: 12 }} />홈
-        </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/travels">
-          <BiMapAlt size={24} style={{ marginRight: 12 }} />내 여행
-        </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/friends">
-          <BiUserCircle size={24} style={{ marginRight: 12 }} />
-          친구
-        </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/feed">
-          <BiGridAlt size={24} style={{ marginRight: 12 }} />
-          피드
-        </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/notice">
-          <BiBookAlt size={24} style={{ marginRight: 12 }} />
-          공지사항
-        </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/event">
-          <BiBell size={24} style={{ marginRight: 12 }} />
-          이벤트
-        </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/setting">
-          <BiCertification size={24} style={{ marginRight: 12 }} />
-          설정
-        </SideBarMenu>
-        <SideBarMenu toPath="/logout">
-          <BiLogOut size={24} style={{ marginRight: 12 }} />
-          로그아웃
-        </SideBarMenu>
+        {tabs.map((tab) => (
+          <SideBarMenu toPath={tab.toPath}>
+            <BiHomeAlt size={24} style={{ marginRight: 12 }} />
+            {tab.title}
+          </SideBarMenu>
+        ))}
       </div>
     </div>
   );
@@ -218,7 +177,8 @@ const TopBar = () => {
     </>
   );
 };
-const DashboardTemplate = () => {
+
+export const DashboardTemplate = ({ type = DASHBOARD }) => {
   return (
     <div
       css={css`
@@ -226,7 +186,7 @@ const DashboardTemplate = () => {
         display: flex;
       `}
     >
-      <SideBar />
+      <SideBar type={type} />
       <div
         css={css`
           flex-grow: 1;
@@ -304,3 +264,71 @@ const dashboardRoute: BreadcrumbsRoute<string>[] = [
 ];
 
 export default dashboardRoute;
+
+const DASHBOARD_TAB = [
+  {
+    toPath: "/dashboard",
+    title: "홈",
+  },
+  {
+    toPath: "/dashboard/travels",
+    title: "내 여행",
+  },
+  {
+    toPath: "/dashboard/friends",
+    title: "친구",
+  },
+  {
+    toPath: "/dashboard/feed",
+    title: "피드",
+  },
+  {
+    toPath: "/dashboard/notice",
+    title: "공지사항",
+  },
+  {
+    toPath: "/dashboard/event",
+    title: "이벤트",
+  },
+  {
+    toPath: "/dashboard/setting",
+    title: "설정",
+  },
+  {
+    toPath: "/logout",
+    title: "로그아웃",
+  },
+];
+
+const ADMIN_TAB = [
+  {
+    toPath: "/admin",
+    title: "홈",
+  },
+  {
+    toPath: "/admin/travels",
+    title: "여행",
+  },
+  {
+    toPath: "/admin/users",
+    title: "사용자",
+  },
+  {
+    toPath: "/admin/posts",
+    title: "게시글",
+  },
+  {
+    toPath: "/admin/notice",
+    title: "공지사항",
+  },
+  {
+    toPath: "/admin/event",
+    title: "이벤트",
+  },
+  {
+    toPath: "/logout",
+    title: "로그아웃",
+  },
+];
+
+const DASHBOARD = "dashboard";
