@@ -25,10 +25,12 @@ import { api } from "@src/app/api/api";
 import travelApi from "@src/app/api/travelApi";
 import TextAvatar from "@src/components/atoms/textAvatar";
 import AdminRoute from "@src/routes/admin";
-import User from "./User";
-import Travel from "./Travel";
-import Post from "./Post";
-import Admin from "./Admin";
+import Admin from "./pages/Admin";
+import Travel from "./pages/Travel";
+import Post from "./pages/Post";
+import User from "./pages/User";
+import Notice from "./pages/Notice";
+import Event from "./pages/Event";
 
 const LLink = styled(Link)`
   text-decoration: none;
@@ -132,13 +134,13 @@ const SideBar = () => {
           <BiMapAlt size={24} style={{ marginRight: 12 }} />
           여행
         </SideBarMenu>
-        <SideBarMenu toPath="/admin/posts">
-          <BiUserCircle size={24} style={{ marginRight: 12 }} />
-          게시글
-        </SideBarMenu>
         <SideBarMenu toPath="/admin/users">
-          <BiGridAlt size={24} style={{ marginRight: 12 }} />
+          <BiUserCircle size={24} style={{ marginRight: 12 }} />
           사용자
+        </SideBarMenu>
+        <SideBarMenu toPath="/admin/posts">
+          <BiGridAlt size={24} style={{ marginRight: 12 }} />
+          게시글
         </SideBarMenu>
         <SideBarMenu toPath="/admin/notice">
           <BiBookAlt size={24} style={{ marginRight: 12 }} />
@@ -278,11 +280,11 @@ const adminRouter: BreadcrumbsRoute<string>[] = [
       },
       {
         path: "/admin/notice",
-        element: <Post />,
+        element: <Notice />,
       },
       {
         path: "/admin/event",
-        element: <Post />,
+        element: <Event />,
       },
     ],
   },

@@ -25,7 +25,6 @@ export interface IScheduleResponse {
   users: IUserResponse[];
 }
 
-
 interface ICostResponse {
   id: number;
   title: string;
@@ -47,7 +46,7 @@ export interface IPostResponse {
   photoInfos: IPhotoResponse[];
 }
 
-interface ICommentResponse{
+interface ICommentResponse {
   commentId: number;
   userInfo: IUserResponse;
   content: string;
@@ -263,6 +262,11 @@ export const authSlice = createSlice({
 });
 
 export const isLoginSelector = createSelector(
+  (state: RootState) => state.auth.token,
+  (token) => token !== null
+);
+
+export const isAdminLoginSelector = createSelector(
   (state: RootState) => state.auth.token,
   (token) => token !== null
 );
