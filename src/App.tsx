@@ -33,11 +33,14 @@ import Navigation from "./components/organisms/navigation";
 import Invite from "./components/pages/invite";
 import { store } from "./app/store";
 import OauthSignUp from "./components/pages/signUp/kakao";
+import User from "./components/pages/admin/User";
+import Travel from "./components/pages/admin/Travel";
+import Post from "./components/pages/admin/Post";
+import adminRouter from "@pages/admin";
 
 const Main = lazy(() => import("@pages/landingPage"));
 const SignIn = lazy(() => import("@pages/signIn"));
 const SignUp = lazy(() => import("@pages/signUp"));
-const Admin = lazy(() => import("@pages/admin"));
 const Settlement = lazy(() => import("@pages/settlement"));
 const LiveSchedule = lazy(() => import("@pages/liveSchedule"));
 const Temp = lazy(() => import("@pages/temp"));
@@ -126,15 +129,8 @@ const App = () => {
         },
       ],
     },
-    {
-      path: "/admin",
-      element: (
-        <AdminRoute>
-          <Outlet />
-        </AdminRoute>
-      ),
-    },
     ...dashboardRoute,
+    ...adminRouter,
   ];
 
   const element = useRoutes(routes);
