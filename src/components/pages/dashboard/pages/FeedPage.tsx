@@ -63,7 +63,12 @@ function FeedPage() {
               {userInfo.userName}
             </UserInfo>
           </UserProfileRow>
-          <Swiper>
+          <Swiper
+          spaceBetween={10}
+          slidesPerView={1}
+          scrollbar={{draggable: true}}
+          navigation
+          pagination={{clickable:true}}>
             {
               photoInfos.map(({name})=>(
                 <SwiperSlide>
