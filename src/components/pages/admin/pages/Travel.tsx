@@ -2,12 +2,12 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const Img = styled.div<{img:string}>`
+const Img = styled.div<{ img: string }>`
   width: 30px;
   height: 30px;
   border-radius: 30px;
   margin-right: 10px;
-  background-image: url(${({img})=>img});
+  background-image: url(${({ img }) => img});
   background-position: center;
   background-size: cover;
 `;
@@ -16,8 +16,7 @@ const Travel = () => {
   const [allTravels, setAllTravels] = useState([]);
 
   useEffect(() => {
-    axios.get("https://api.dev.travely.guide/v1/admin/travels")
-    .then(t => {
+    axios.get("https://api.dev.travely.guide/v1/admin/travels").then((t) => {
       setAllTravels(t.data.content);
     });
   }, []);
@@ -34,7 +33,7 @@ const Travel = () => {
         </tr>
       </thead>
       <tbody>
-        {allTravels.map(t =>
+        {allTravels.map((t) => (
           <tr>
             <th scope="col">{t.Id}</th>
             <th scope="col">{t.title}</th>
@@ -42,7 +41,7 @@ const Travel = () => {
             <th scope="col">{t.endDate}</th>
             <th scope="col">{t.managerId}</th>
           </tr>
-        )}
+        ))}
       </tbody>
     </table>
   );

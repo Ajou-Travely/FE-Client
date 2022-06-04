@@ -142,26 +142,30 @@ const travelApi = baseApi
             getCacheEntry,
           }
         ) => {
-          const response = await queryFulfilled;
-          socket.emit("scheduleOrderChange", {
-            travelId: args.travelId,
-            data: {
-              date: args.date,
-              scheduleOrder: args.scheduleOrder,
-            },
-          });
-
-          dispatch(
+          const patchResult = dispatch(
             travelApi.util.updateQueryData(
               "getTravel",
               args.travelId,
               (draft) => {
                 draft.dates.find(
                   (date) => date.date === args.date
-                )!.scheduleOrders = response.data;
+                )!.scheduleOrders = args.scheduleOrder;
               }
             )
           );
+
+          try {
+            const response = await queryFulfilled;
+            socket.emit("scheduleOrderChange", {
+              travelId: args.travelId,
+              data: {
+                date: args.date,
+                scheduleOrder: args.scheduleOrder,
+              },
+            });
+          } catch (e) {
+            patchResult.undo();
+          }
         },
       }),
 
