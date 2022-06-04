@@ -161,7 +161,7 @@ const TravelEditPage = () => {
         }
       );
 
-      return routeResponse.data;
+      return routeResponse.data ?? undefined;
     }
 
     const promises: Promise<any>[] = [];
@@ -429,10 +429,17 @@ const TravelEditPage = () => {
                     (draft) => {
                       draft.dates.find(
                         (date) => date.date === selectedDate
-                      )!.schedules = updatedData;
+                      )!.scheduleOrders = updatedData.map((data) => data.scheduleId);
                     }
                   )
                 );
+                client.current!.emit("scheduleOrderChange", {
+                  travelId: travelId!,
+                  data: {
+                    date: selectedDate!,
+                    scheduleOrder: updatedData.map((data) => data.scheduleId),
+                  },
+                });
               }}
             />
             <div

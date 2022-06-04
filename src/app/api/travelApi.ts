@@ -99,42 +99,6 @@ const travelApi = baseApi
             date: date,
           },
         }),
-        onQueryStarted: async (
-          args,
-          {
-            dispatch,
-            getState,
-            extra,
-            requestId,
-            queryFulfilled,
-            getCacheEntry,
-          }
-        ) => {
-          const patchResult = dispatch(
-            travelApi.util.updateQueryData(
-              "getTravel",
-              args.travelId,
-              (draft) => {
-                draft.dates.find(
-                  (date) => date.date === args.date
-                )!.scheduleOrders = args.scheduleOrder;
-              }
-            )
-          );
-
-          try {
-            const response = await queryFulfilled;
-            socket.emit("scheduleOrderChange", {
-              travelId: args.travelId,
-              data: {
-                date: args.date,
-                scheduleOrder: args.scheduleOrder,
-              },
-            });
-          } catch (e) {
-            patchResult.undo();
-          }
-        },
       }),
 
       createTravelDate: builder.mutation<
