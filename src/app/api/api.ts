@@ -42,6 +42,7 @@ export interface IPostResponse {
   userInfo: IUserResponse;
   title: string;
   text: string;
+  createdAt: number;
   comments: ICommentResponse[];
   photoInfos: IPhotoResponse[];
 }
