@@ -42,11 +42,17 @@ export interface IPostResponse {
   userInfo: IUserResponse;
   title: string;
   text: string;
+  createdAt: number;
   comments: ICommentResponse[];
   photoInfos: IPhotoResponse[];
 }
 
-interface ICommentResponse {
+export interface IPageRequest {
+  pageSize: number;
+  pageNumber: number;
+}
+
+interface ICommentResponse{
   commentId: number;
   userInfo: IUserResponse;
   content: string;
