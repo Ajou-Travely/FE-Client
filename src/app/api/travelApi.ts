@@ -48,38 +48,6 @@ const travelApi = baseApi
         providesTags: (result, error, travelId) => [
           { type: "Travel", id: travelId },
         ],
-        onCacheEntryAdded: async function (
-          travelId,
-          { updateCachedData, cacheDataLoaded, cacheEntryRemoved, getState }
-        ) {
-          socket = socketClient("http://123.214.75.32:9999/", {
-            transports: ["websocket"],
-            auth: {
-              token: (getState() as RootState).auth.token,
-            },
-            query: {
-              travelId: travelId,
-              userId: 1,
-            },
-          });
-
-          socket.on("scheduleOrderChanged", (message) => {
-            console.log("scheduleOrderChanged", message);
-            updateCachedData((draft) => {
-              draft.dates.find(
-                (date) => date.date === message.date
-              )!.scheduleOrders = message.scheduleOrder;
-            });
-          });
-
-          socket.on("scheduleAdded", (message) => {
-            console.log("scheduleAdded", message);
-          });
-
-          await cacheEntryRemoved;
-
-          socket.close();
-        },
       }),
 
       getSchedule: builder.query<

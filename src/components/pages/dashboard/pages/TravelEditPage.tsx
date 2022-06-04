@@ -1,6 +1,11 @@
-import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
+import {
+  CustomOverlayMap,
+  Map,
+  MapMarker,
+  Polyline,
+} from "react-kakao-maps-sdk";
 import { travelLocations } from "@pages/liveSchedule/dummyData";
-import { BiPlus, BiCalendar, BiMapPin } from "react-icons/bi";
+import { BiPlus, BiCalendar, BiMapPin, BiPointer } from "react-icons/bi";
 import React, {
   useCallback,
   useEffect,
@@ -24,9 +29,11 @@ import travelApi from "@src/app/api/travelApi";
 import _ from "lodash";
 import TextAvatar from "@src/components/atoms/textAvatar";
 import socketClient, { Socket } from "socket.io-client";
-import { RootState } from "@src/app/store";
+import { RootState, store } from "@src/app/store";
 import { theme } from "@src/styles/theme";
 import SearchModal from "@src/components/organisms/searchModal";
+import produce from "immer";
+import { AnimateSharedLayout, motion, useMotionValue } from "framer-motion";
 import ImageFeed from "../components/imageFeed";
 
 const BtnWarpper = styled.div`
@@ -53,7 +60,61 @@ const dummyCenter = {
 const TravelEditPage = () => {
   const { travelId } = useParams<"travelId">();
 
+  const client = useRef<Socket>();
   const dispatch = useAppDispatch();
+
+  const [sharedCursors, setSharedCursors] = useState<{
+    [ownerId: string]: { lat: number; lng: number };
+  }>({});
+
+  useEffect(() => {
+    console.log(sharedCursors);
+  }, [sharedCursors]);
+
+  useEffect(() => {
+    const socket = socketClient("http://123.214.75.32:9999/", {
+      transports: ["websocket"],
+      auth: {
+        token: store.getState().auth.token,
+      },
+      query: {
+        travelId: travelId,
+        userId: 1,
+      },
+    });
+
+    socket.on("scheduleOrderChanged", (message) => {
+      dispatch(
+        travelApi.util.updateQueryData("getTravel", travelId!, (draft) => {
+          draft.dates.find(
+            (date) => date.date === message.date
+          )!.scheduleOrders = message.scheduleOrder;
+        })
+      );
+    });
+
+    socket.on("scheduleAdded", (message) => {
+      console.log("scheduleAdded", message);
+    });
+
+    socket.on(
+      "mapCursorChanged",
+      (message: { ownerId: number; data: { lat: number; lng: number } }) => {
+        console.log("mapCursorChanged", message);
+        setSharedCursors(
+          produce((draft) => {
+            draft[message.ownerId] = message.data;
+          })
+        );
+      }
+    );
+
+    client.current = socket;
+
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   const [type, setType] = useState("schedule");
 
@@ -211,7 +272,14 @@ const TravelEditPage = () => {
   const mouseMoveOnMapEvent = useCallback(
     _.throttle((target, mouseEvent) => {
       console.log(mouseEvent.latLng);
-    }, 500),
+      client.current?.emit("mapCursorChange", {
+        travelId: travelId!,
+        data: {
+          lat: mouseEvent.latLng.getLat(),
+          lng: mouseEvent.latLng.getLng(),
+        },
+      });
+    }, 10),
     []
   );
 
@@ -446,6 +514,15 @@ const TravelEditPage = () => {
           onMouseMove={mouseMoveOnMapEvent}
           style={{ width: "100%", height: "100%" }}
         >
+          {Object.entries(sharedCursors).map(([k, v]) => (
+            <CustomOverlayMap position={v}>
+              <div>
+                <BiPointer color={"purple"} size={24}>
+                </BiPointer>
+                {k}
+              </div>
+            </CustomOverlayMap>
+          ))}
           {seletedPosition && (
             <MapMarker // 마커를 생성합니다
               position={seletedPosition}
