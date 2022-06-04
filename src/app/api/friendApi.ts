@@ -35,13 +35,19 @@ const friendApi = baseApi.injectEndpoints({
     }),
     acceptFriendsRequest: builder.mutation<void, number>({
       query: (targetId) => ({
-        url: `${USER_BASE_URL}/friends/request/${targetId}`,
+        url: `${USER_BASE_URL}/friends/given-requests/${targetId}`,
         method: "POST",
       }),
     }),
     rejectFriendsRequest: builder.mutation<void, number>({
       query: (targetId) => ({
-        url: `${USER_BASE_URL}/friends/request/${targetId}`,
+        url: `${USER_BASE_URL}/friends/given-requests/${targetId}`,
+        method: "DELETE",
+      }),
+    }),
+    cancelFriendsRequest: builder.mutation<void, number>({
+      query: (targetId) => ({
+        url: `${USER_BASE_URL}/friends/giving-requests/${targetId}`,
         method: "DELETE",
       }),
     }),
