@@ -2,40 +2,40 @@ import { TableCell } from "@material-ui/core";
 import styled from "@emotion/styled";
 import PaginationTable from "../components/PaginationTable";
 
-const Schedule = () => {
-  const url = "https://api.dev.travely.guide/v1/admin/schedules";
+const Cost = () => {
+  const url = "https://api.dev.travely.guide/v1/admin/costs";
 
   const kps: { title: string; gen: (rowData: any) => React.ReactNode }[] = [
     {
       title: "ID",
       gen: (rowData: any) => (
         <TableCell align="center">
-          {rowData.scheduleId}
+          {rowData.costId}
         </TableCell>
       ),
     },
     {
-      title: "시작 시간",
+      title: "정산 금액",
       gen: (rowData: any) => (
         <TableCell align="center">
-          {rowData.startTime}
+          {rowData.totalAmount}
         </TableCell>
       ),
     },
     {
-      title: "종료 시간",
+      title: "제목",
       gen: (rowData: any) => (
-        <TableCell align="center">{rowData.endTime}</TableCell>
+        <TableCell align="center">{rowData.title}</TableCell>
       ),
     },
     {
-      title: "장소",
+      title: "결제자",
       gen: (rowData: any) => (
-        <TableCell align="center">{rowData.place.placeName}</TableCell>
+        <TableCell align="center">{rowData.payerId}</TableCell>
       ),
     },
   ];
   return <PaginationTable url={url} kps={kps}></PaginationTable>;
 };
 
-export default Schedule;
+export default Cost;

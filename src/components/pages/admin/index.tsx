@@ -28,9 +28,11 @@ import AdminRoute from "@src/routes/admin";
 import Admin from "./pages/Admin";
 import Travel from "./pages/Travel";
 import Post from "./pages/Post";
+import Schedule from "./pages/Schedule";
 import User from "./pages/User";
 import Notice from "./pages/Notice";
 import Event from "./pages/Event";
+import Cost from "./pages/Cost";
 
 const LLink = styled(Link)`
   text-decoration: none;
@@ -140,7 +142,15 @@ const SideBar = () => {
         </SideBarMenu>
         <SideBarMenu toPath="/admin/posts">
           <BiGridAlt size={24} style={{ marginRight: 12 }} />
-          게시글
+          피드
+        </SideBarMenu>
+        <SideBarMenu toPath="/admin/schedules">
+          <BiGridAlt size={24} style={{ marginRight: 12 }} />
+          일정
+        </SideBarMenu>
+        <SideBarMenu toPath="/admin/costs">
+          <BiGridAlt size={24} style={{ marginRight: 12 }} />
+          정산
         </SideBarMenu>
         <SideBarMenu toPath="/admin/notice">
           <BiBookAlt size={24} style={{ marginRight: 12 }} />
@@ -149,10 +159,6 @@ const SideBar = () => {
         <SideBarMenu toPath="/admin/event">
           <BiBell size={24} style={{ marginRight: 12 }} />
           이벤트
-        </SideBarMenu>
-        <SideBarMenu toPath="/logout">
-          <BiLogOut size={24} style={{ marginRight: 12 }} />
-          로그아웃
         </SideBarMenu>
       </div>
     </div>
@@ -277,6 +283,14 @@ const adminRouter: BreadcrumbsRoute<string>[] = [
       {
         path: "/admin/users",
         element: <User />,
+      },
+      {
+        path: "/admin/schedules",
+        element: <Schedule />,
+      },
+      {
+        path: "/admin/costs",
+        element: <Cost />,
       },
       {
         path: "/admin/notice",
