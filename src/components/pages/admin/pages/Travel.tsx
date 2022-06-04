@@ -1,50 +1,44 @@
-import styled from "@emotion/styled";
-import axios from "axios";
-import { useEffect, useState } from "react";
-
-const Img = styled.div<{ img: string }>`
-  width: 30px;
-  height: 30px;
-  border-radius: 30px;
-  margin-right: 10px;
-  background-image: url(${({ img }) => img});
-  background-position: center;
-  background-size: cover;
-`;
+import { TableCell } from "@material-ui/core";
+import PaginationTable from "../components/PaginationTable";
 
 const Travel = () => {
-  const [allTravels, setAllTravels] = useState([]);
-
-  useEffect(() => {
-    axios.get("https://api.dev.travely.guide/v1/admin/travels").then((t) => {
-      setAllTravels(t.data.content);
-    });
-  }, []);
-
-  return (
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Title</th>
-          <th scope="col">Start Date</th>
-          <th scope="col">End Date</th>
-          <th scope="col">Manager</th>
-        </tr>
-      </thead>
-      <tbody>
-        {allTravels.map((t) => (
-          <tr>
-            <th scope="col">{t.Id}</th>
-            <th scope="col">{t.title}</th>
-            <th scope="col">{t.startDate}</th>
-            <th scope="col">{t.endDate}</th>
-            <th scope="col">{t.managerId}</th>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+  const url = "https://api.dev.travely.guide/v1/admin/travels";
+  
+  const kps: { title: string; gen: (rowData: any) => React.ReactNode }[] = [
+    {
+      title: "ID",
+      gen: (rowData: any) => (
+        <TableCell align="center">
+          {rowData.id}
+        </TableCell>
+      ),
+    },
+    {
+      title: "제목",
+      gen: (rowData: any) => (
+        <TableCell align="center">{rowData.title}</TableCell>
+      ),
+    },
+    {
+      title: "시작 날짜",
+      gen: (rowData: any) => (
+        <TableCell align="center">{rowData.startDate}</TableCell>
+      ),
+    },
+    {
+      title: "종료 날짜",
+      gen: (rowData: any) => (
+        <TableCell align="center">{rowData.endDate}</TableCell>
+      ),
+    },
+    {
+      title: "방장",
+      gen: (rowData: any) => (
+        <TableCell align="center">{rowData.managerId}</TableCell>
+      ),
+    },
+  ];
+  return <PaginationTable url={url} kps={kps}></PaginationTable>;
 };
 
 export default Travel;
