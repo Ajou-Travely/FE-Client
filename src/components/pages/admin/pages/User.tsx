@@ -19,7 +19,7 @@ const User = () => {
     {
       title: "ID",
       gen: (rowData: any) => (
-        <TableCell component="th" scope="row">
+        <TableCell component="th" scope="row" align="center">
           {rowData.userId}
         </TableCell>
       ),
