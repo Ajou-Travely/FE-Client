@@ -3,6 +3,7 @@ import { RootState } from "@src/app/store";
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { TRAVEL_BASE_URL, USER_BASE_URL } from "@utils/type";
 import baseApi, { IPaginationResponse } from "@src/app/api/baseApi";
+import travelApi from "./travelApi";
 
 export interface IUserResponse {
   userId: number;
@@ -52,7 +53,7 @@ export interface IPageRequest {
   pageNumber: number;
 }
 
-interface ICommentResponse{
+interface ICommentResponse {
   commentId: number;
   userInfo: IUserResponse;
   content: string;
@@ -222,6 +223,14 @@ export const api = baseApi.injectEndpoints({
           totalAmount: arg.totalAmount,
         },
       }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        const updateResponse = await queryFulfilled;
+        dispatch(
+          travelApi.util.updateQueryData("getTravel", arg.travelId, (draft) => {
+            draft.costs.push(updateResponse.data);
+          })
+        );
+      },
     }),
     /**
      * Invite Apis
