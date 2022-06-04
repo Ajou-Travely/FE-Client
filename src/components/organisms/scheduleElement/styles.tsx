@@ -30,6 +30,10 @@ const ScheduleElementContainer = styled.div`
   max-width: 20vw;
   height: 100%;
   box-shadow: 0px 0px 3px ${theme.colors.shadow};
+  cursor: pointer;
+  :hover {
+    opacity: 50%;
+  }
 `;
 
 const Wrapper = styled.div`
