@@ -190,6 +190,7 @@ const travelApi = baseApi
             endDate: args.endDate,
           },
         }),
+        invalidatesTags: (args) => [{ type: "Travel", id: args.travelId }],
       }),
       createSchedule: builder.mutation<
         any,
@@ -243,6 +244,7 @@ const travelApi = baseApi
             data: response,
           });
         },
+        invalidatesTags: (args) => [{ type: "Travel", id: args.travelId }],
       }),
       uploadSchedulePhotos: builder.mutation<
         string[],
@@ -257,11 +259,22 @@ const travelApi = baseApi
             TRAVEL_BASE_URL +
             `/${args.travelId}/schedules/${args.scheduleId}/photos`,
           method: "POST",
-          data: args.photos,
-          // headers: {
-          //   "Content-Type": "multipart/form-data",
-          // },
+          body: args.photos,
         }),
+        onQueryStarted: async (args, { dispatch, queryFulfilled }) => {
+          const updateResponse = await queryFulfilled;
+          dispatch(
+            travelApi.util.updateQueryData(
+              "getTravel",
+              args.travelId,
+              (draft) => {
+                draft.dates["schedules"]
+                  .filter(({ scheduleId }) => scheduleId === args.scheduleId)[0]
+                  .photos.push(updateResponse.data);
+              }
+            )
+          );
+        },
       }),
     }),
   });
