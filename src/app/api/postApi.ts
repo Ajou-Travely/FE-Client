@@ -1,6 +1,6 @@
 import baseApi, { IPaginationResponse } from "@src/app/api/baseApi";
 import { POST_BASE_URL } from "@utils/type";
-import { IPostResponse } from "@src/app/api/api";
+import { IPageRequest, IPostResponse } from "@src/app/api/api";
 
 const postApi = baseApi
   .enhanceEndpoints({
@@ -8,9 +8,9 @@ const postApi = baseApi
   })
   .injectEndpoints({
     endpoints: (builder) => ({
-      getPostsOfFriends: builder.query<IPaginationResponse<IPostResponse>, void>({
-        query: () => ({
-          url: POST_BASE_URL,
+      getPostsOfFriends: builder.query<IPaginationResponse<IPostResponse>, IPageRequest>({
+        query: (pageRequest) => ({
+          url: POST_BASE_URL + `?pageNumber=${pageRequest.pageNumber}&pageSize=${pageRequest.pageSize}`,
           method: "GET",
         }),
         providesTags: (result, error, postId) => [
