@@ -12,6 +12,12 @@ const Img = styled.div<{ img: string }>`
   background-size: cover;
 `;
 
+const PaginationBar = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+
 type UserType = {
   userId: number;
   profilePath: string;
@@ -23,40 +29,51 @@ type UserType = {
 
 const User = () => {
   const [allUsers, setAllUsers] = useState<UserType[]>([]);
+  const [page, setPage] = useState(0);
+
+  const url = "https://api.dev.travely.guide/v1/admin/users";
 
   useEffect(() => {
     axios
-      .get("https://api.dev.travely.guide/v1/admin/users?page=0")
+      .get(url + `?page=` + page)
       .then((u) => setAllUsers(u.data.content));
-  }, []);
+  }, [page]);
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">profile</th>
-          <th scope="col">Name</th>
-          <th scope="col">Email</th>
-          <th scope="col">Phone Number</th>
-          <th scope="col">userType</th>
-        </tr>
-      </thead>
-      <tbody>
-        {allUsers.map((u) => (
-          <tr key={u.userId}>
-            <th scope="col">{u.userId}</th>
-            <th scope="col">
-              <Img img={u.profilePath} />
-            </th>
-            <th scope="col">{u.name}</th>
-            <th scope="col">{u.email}</th>
-            <th scope="col">{u.phoneNumber}</th>
-            <th scope="col">{u.userType}</th>
+    <div>
+      {[0,1,2,3,4,5].map(idx=>(
+        <button onClick={()=>setPage(idx)}>{idx}</button>
+      ))}
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">profile</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">userType</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {allUsers.map((u) => (
+            <tr key={u.userId}>
+              <th scope="col">{u.userId}</th>
+              <th scope="col">
+                <Img img={u.profilePath} />
+              </th>
+              <th scope="col">{u.name}</th>
+              <th scope="col">{u.email}</th>
+              <th scope="col">{u.phoneNumber}</th>
+              <th scope="col">{u.userType}</th>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <PaginationBar>
+
+      </PaginationBar>
+    </div>
   );
 };
 
