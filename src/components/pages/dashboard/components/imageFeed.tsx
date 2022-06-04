@@ -143,7 +143,10 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
                     css={css`
                       padding: 1rem;
                       display: grid;
-                      grid-template-rows: auto;
+                      grid-template-columns: repeat(
+                        auto-fit,
+                        minmax(10px, 1fr)
+                      );
                       gap: 1rem;
                     `}
                   >
@@ -157,7 +160,6 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
                             background-image: url(${schedulePhotoPath});
                             background-position: center;
                             background-size: cover;
-                            background: whitesmoke;
                           `}
                         />
                       )

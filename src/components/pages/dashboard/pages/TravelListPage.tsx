@@ -30,19 +30,22 @@ const TravelListPage = () => {
           <CreateTravelModal onSuccess={closeCreateTravelModal} />
         </Modal>
       )}
+
       <div
         css={css`
           position: relative;
-          padding: 2rem;
-          width: calc(100vw - 250px);
+          padding: 1rem;
           height: 100%;
+          gap: 1rem;
         `}
       >
+        <h2> 내 여행</h2>
         <div
           css={css`
             display: grid;
             overflow: auto;
             grid-template-columns: repeat(4, 1fr);
+            padding: 1rem;
             gap: 24px;
             * {
               border-bottom-style: none;
@@ -54,7 +57,9 @@ const TravelListPage = () => {
               border-radius: 10px;
               max-width: 20vw;
               height: 100%;
-              box-shadow: 0px 0px 3px ${theme.colors.shadow};
+              border: none;
+              background: none;
+              box-shadow: 0px 0px 6px ${theme.colors.shadow};
               display: flex;
               justify-content: center;
               align-items: center;

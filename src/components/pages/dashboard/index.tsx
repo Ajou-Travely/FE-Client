@@ -237,8 +237,9 @@ const DashboardTemplate = () => {
       >
         <div
           css={css`
-            height: 80px;
-            padding: 0 24px;
+            height: 8vh;
+            padding: 1rem;
+            box-sizing: border-box;
             display: flex;
             align-items: center;
             justify-content: space-between;

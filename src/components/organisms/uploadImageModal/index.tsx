@@ -31,9 +31,9 @@ const UploadImageModal = ({
   const handleUpload = async (e: any) => {
     e.preventDefault();
     const photos = new FormData();
-    photos.append("photos", image.raw);
-    console.log(travelId, scheduleId);
-    uploadImage({ travelId, scheduleId, photos: [photos] });
+    photos.append("photos[]", image.raw);
+    console.log(photos.get("photos"));
+    uploadImage({ travelId, scheduleId, photos });
     onClose();
   };
   useEffect(() => {

@@ -112,6 +112,8 @@ function FriendsPage() {
   const [deleteFriends] = friendApi.useDeleteFriendsMutation();
   const [acceptRequest] = friendApi.useAcceptFriendsRequestMutation();
   const [rejectRequest] = friendApi.useRejectFriendsRequestMutation();
+  const [cancelRequest] = friendApi.
+  useCancelFriendsRequestMutation();
   const addEmailRef = useRef<HTMLInputElement>(null);
   const [type, setType] = useState<"list" | "given" | "giving">("list");
   const handleAddFriends = () => {
@@ -245,7 +247,7 @@ function FriendsPage() {
                     <UserContainer key={1}>
                       <img src={profilePath} />
                       <p>{userName}</p>
-                      <p onClick={() => {}}>
+                      <p onClick={() => cancelRequest(userId)}>
                         <img src="/cancel.svg" />
                       </p>
                     </UserContainer>
