@@ -37,12 +37,15 @@ const Marker = ({ children }: { children: any }) => {
 
 const ImageFeed = ({ travelData, travelId }: Props) => {
   const [createDateImageOpened, setCreateImageModalOpened] = useState(false);
+  const [scheduleId, setScheduleId] = useState("");
   const [selectedDate, setSelectedDate] = useState<string>("");
-  const openCreateImageModal = useCallback(() => {
+  const openCreateImageModal = useCallback((id: string) => {
+    setScheduleId(id);
     setCreateImageModalOpened(true);
   }, []);
 
   const closeCreateImageModal = useCallback(() => {
+    setScheduleId("");
     setCreateImageModalOpened(false);
   }, []);
   const reOrderedData = (selectedDate) =>
@@ -59,6 +62,14 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
 
   return (
     <>
+      {createDateImageOpened && (
+        <UploadImageModal
+          travelId={travelId!}
+          scheduleId={scheduleId}
+          onClose={closeCreateImageModal}
+          onSuccess={closeCreateImageModal}
+        />
+      )}
       <div
         css={css`
           width: 30vw;
@@ -76,9 +87,21 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
               border-bottom: ${dateData.date === selectedDate
                 ? `3px solid #5fe1eb`
                 : `none`};
+              p:nth-child(1) {
+                display: block;
+              }
+              p:nth-child(2) {
+                display: none;
+              }
               cursor: pointer;
               :hover {
                 opacity: 50%;
+                p:nth-child(1) {
+                  display: none;
+                }
+                p:nth-child(2) {
+                  display: block;
+                }
               }
             `}
             key={dateData.date}
@@ -86,7 +109,8 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
               setSelectedDate(dateData.date);
             }}
           >
-            Day {i + 1}
+            <p>Day {i + 1}</p>
+            <p>{dateData.date}</p>
           </button>
         ))}
       </div>
@@ -105,14 +129,6 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
               console.log(data);
               return (
                 <>
-                  {createDateImageOpened && (
-                    <UploadImageModal
-                      travelId={travelId!}
-                      scheduleId={data.scheduleId}
-                      onClose={closeCreateImageModal}
-                      onSuccess={closeCreateImageModal}
-                    />
-                  )}
                   <div
                     css={css`
                       display: flex;
@@ -143,10 +159,7 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
                     css={css`
                       padding: 1rem;
                       display: grid;
-                      grid-template-columns: repeat(
-                        auto-fit,
-                        minmax(10px, 1fr)
-                      );
+                      grid-template-columns: repeat(5, 1fr);
                       gap: 1rem;
                     `}
                   >
@@ -177,7 +190,7 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
                           opacity: 50%;
                         }
                       `}
-                      onClick={openCreateImageModal}
+                      onClick={() => openCreateImageModal(data.scheduleId)}
                     >
                       <BiPlus />
                     </div>
