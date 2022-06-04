@@ -4,7 +4,6 @@ import {
   MapMarker,
   Polyline,
 } from "react-kakao-maps-sdk";
-import { travelLocations } from "@pages/liveSchedule/dummyData";
 import { BiPlus, BiCalendar, BiMapPin, BiPointer } from "react-icons/bi";
 import React, {
   useCallback,
@@ -13,16 +12,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import InnerDashBoard from "@organisms/dashBoard/inner";
 import { css } from "@emotion/react";
-import LabelBtn from "@src/components/atoms/button/label";
 import { useParams } from "react-router-dom";
 import { api, IScheduleResponse } from "@src/app/api/api";
 import axios from "axios";
 import ListProto from "@pages/dashboard/components/timeline/ListProto";
 import SplitBill from "@pages/dashboard/components/timeline/SplitBill";
 import CreateTravelDateModal from "@pages/dashboard/CreateTravelDateModal";
-import { Avartar } from "@src/components/organisms/scheduleElement/styles";
 import styled from "@emotion/styled";
 import { useAppDispatch } from "@src/app/hooks";
 import travelApi from "@src/app/api/travelApi";
@@ -33,7 +29,6 @@ import { RootState, store } from "@src/app/store";
 import { theme } from "@src/styles/theme";
 import SearchModal from "@src/components/organisms/searchModal";
 import produce from "immer";
-import { AnimateSharedLayout, motion, useMotionValue } from "framer-motion";
 import ImageFeed from "../components/imageFeed";
 
 const BtnWarpper = styled.div`
