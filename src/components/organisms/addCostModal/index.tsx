@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "@atoms/button";
 import Chip from "@atoms/chip";
@@ -44,9 +44,13 @@ const AddCostModal = ({
   const handleNext = () =>
     title !== "" && setCountChip(Math.min(3, countChip + 1));
 
+  useEffect(() => {
+    console.log(usersPrice);
+  }, [usersPrice]);
+
   const compareUserPrice =
-    price ==
-    Object.values(usersPrice).reduce((r: number, v) => r + (v as number), 0);
+    Number(price) ==
+    Object.values(usersPrice).reduce((r: number, v) => r + Number(v), 0);
   const goNextPage = () => {
     if (price !== undefined && +price > 0 && compareUserPrice) {
       {
