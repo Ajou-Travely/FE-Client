@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import travelApi from "@src/app/api/travelApi";
 import Modal from "@src/components/modal";
+import { theme } from "@src/styles/theme";
 import { useEffect, useState } from "react";
 
 interface ICreateTravelScheduleModalProps {
@@ -94,7 +95,13 @@ const SearchModal = ({
           padding: 1rem;
         `}
       >
+        <h3>장소를 입력해주세요!</h3>
         <input
+          css={css`
+            border-radius: 5px;
+            border: none;
+            box-shadow: 0px 0px 3px ${theme.colors.shadow};
+          `}
           type="text"
           value={searchKeyword}
           onChange={(e) => setSearchKeyword(e.target.value)}
@@ -129,11 +136,14 @@ const SearchModal = ({
         </div>
         <div
           css={css`
-            position: absolute;
-            bottom: 0px;
             display: flex;
             justify-content: space-between;
-            width: 90%;
+            button {
+              background: white;
+              border: none;
+              padding: 1rem;
+              box-sizing: border-box;
+            }
           `}
         >
           <button type="button" onClick={onClose}>

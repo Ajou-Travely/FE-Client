@@ -322,9 +322,21 @@ const TravelEditPage = () => {
                     border-bottom: ${dateData.date === selectedDate
                       ? `3px solid #5fe1eb`
                       : `none`};
+                    p:nth-child(1) {
+                      display: block;
+                    }
+                    p:nth-child(2) {
+                      display: none;
+                    }
                     cursor: pointer;
                     :hover {
                       opacity: 50%;
+                      p:nth-child(1) {
+                        display: none;
+                      }
+                      p:nth-child(2) {
+                        display: block;
+                      }
                     }
                   `}
                   key={dateData.date}
@@ -332,7 +344,8 @@ const TravelEditPage = () => {
                     setSelectedDate(dateData.date);
                   }}
                 >
-                  Day {i + 1}
+                  <p>Day {i + 1}</p>
+                  <p>{dateData.date}</p>
                 </button>
               ))}
             </div>

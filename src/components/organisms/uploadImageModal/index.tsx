@@ -17,6 +17,7 @@ const UploadImageModal = ({
   onSuccess,
 }: IUploadImageModalProps) => {
   const [image, setImage] = useState({ preview: "", raw: "" });
+  console.log(scheduleId);
   const [uploadImage, { error, isSuccess, isLoading }] =
     travelApi.useUploadSchedulePhotosMutation();
   const handleChange = (e: any) => {
@@ -31,7 +32,7 @@ const UploadImageModal = ({
   const handleUpload = async (e: any) => {
     e.preventDefault();
     const photos = new FormData();
-    photos.append("photos[]", image.raw);
+    photos.append("photos", image.raw);
     console.log(photos.get("photos"));
     uploadImage({ travelId, scheduleId, photos });
     onClose();
@@ -56,26 +57,20 @@ const UploadImageModal = ({
           padding: 1rem;
         `}
       >
-        <label htmlFor="upload-button">
-          {image.preview ? (
-            <img
-              css={css`
-                width: 30vmin;
-                height: 30vmin;
-              `}
-              src={image.preview}
-              alt="img"
-            />
-          ) : (
-            <h3 className="text-center">눌러주세요</h3>
-          )}
-        </label>
-        <input
-          type="file"
-          id="upload-button"
-          style={{ display: "none" }}
-          onChange={handleChange}
-        />
+        {image.preview ? (
+          <img
+            css={css`
+              width: 30vmin;
+              height: 30vmin;
+            `}
+            src={image.preview}
+            alt="img"
+          />
+        ) : (
+          <h3 className="text-center">눌러주세요</h3>
+        )}
+
+        <input type="file" onChange={handleChange} />
         <button onClick={handleUpload}>사진 바꾸기</button>
       </div>
     </Modal>
