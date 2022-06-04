@@ -258,9 +258,9 @@ const travelApi = baseApi
             `/${args.travelId}/schedules/${args.scheduleId}/photos`,
           method: "POST",
           data: args.photos,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          // headers: {
+          //   "Content-Type": "multipart/form-data",
+          // },
         }),
       }),
     }),
