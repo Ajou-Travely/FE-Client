@@ -41,14 +41,6 @@ const PaginationBar = styled.div`
   align-items: center;
 `;
 
-type PageInfoType = {
-  first: number;
-  last: number;
-  numberOfElements: number;
-  totalElements: number;
-  totalPages: number;
-};
-
 interface TablePaginationActionsProps {
   count: number;
   page: number;
@@ -166,15 +158,21 @@ const PaginationTable = ({ url, kps }) => {
         <Table size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              {kps.map((kp) => (
-                <TableCell align="center">{kp.title}</TableCell>
+              {kps.map((kp, idx) => (
+                <TableCell key={idx} align="center">
+                  {kp.title}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.userId}>
-                {kps.map((kp) => kp.gen(row))}
+            {rows.map((row, idx) => (
+              <TableRow key={idx}>
+                {kps.map((kp, idx2) => (
+                  <React.Fragment key={idx + idx2}>
+                    {kp.gen(row)}
+                  </React.Fragment>
+                ))}
               </TableRow>
             ))}
           </TableBody>
@@ -182,7 +180,7 @@ const PaginationTable = ({ url, kps }) => {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[10]}
-                colSpan={3}
+                colSpan={4}
                 count={totalCount}
                 rowsPerPage={rowsPerPage}
                 page={page}
