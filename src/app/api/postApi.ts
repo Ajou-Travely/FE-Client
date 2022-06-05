@@ -27,6 +27,13 @@ const postApi = baseApi
           body: formData,
         }),
       }),
+      createNotice: builder.mutation<any, FormData>({
+        query: (formData) => ({
+          url: "/v1/notices",
+          method: "POST",
+          body: formData,
+        }),
+      }),
     }),
   });
 
