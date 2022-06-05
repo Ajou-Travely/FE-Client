@@ -154,8 +154,7 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
                       width: 100%;
                       display: flex;
                       align-items: center;
-                      justify-content: center;
-                      column-gap: 2rem;
+                      justify-content: space-between;
                       border-radius: 10px;
                       padding: 1rem;
                       box-shadow: 0px 0px 3px ${theme.colors.shadow};
@@ -165,6 +164,7 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
                     <div
                       css={css`
                         display: flex;
+                        flex-grow: 1;
                         flex-direction: column;
                         * {
                           margin: 0px;

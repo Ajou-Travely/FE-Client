@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { useNavigate } from "react-router-dom";
 import { Wrapper, SubmitBtn, ArrowImg } from "./styles";
+import { LLink } from "@pages/admin";
 
 // const tempData = {
 //   title: "예비군 동원 훈련",
@@ -192,25 +193,9 @@ import { Wrapper, SubmitBtn, ArrowImg } from "./styles";
 const Main = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    const title = e.target.title.value;
-    const dayStart = new Date(e.target.dayStart.value);
-    const dayEnd = new Date(e.target.dayEnd.value);
-    navigate("/newSchedule", {
-      state: {
-        title: title,
-        dayStart: dayStart,
-        dayEnd: dayEnd,
-      },
-    });
-  };
-
   return (
     <div
       css={css`
-        padding: 0 80px;
-
         margin: 0 auto;
       `}
     >
@@ -228,9 +213,12 @@ const Main = () => {
         <img
           src="https://www.kagoshima-kankou.com/storage/tourism_themes/12/responsive_images/ElwnvZ2u5uZda7Pjcwlk4mMtr08kLNydT8zXA6Ie__1673_1115.jpeg"
           css={css`
-            width: 100%;
+            margin-left: 40%;
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 300px 100%);
+
+            width: 60%;
+            height: 800px;
             max-height: 800px;
-            border-radius: 24px;
             object-fit: cover;
           `}
         />
@@ -240,6 +228,10 @@ const Main = () => {
             top: 0;
             left: 0;
             padding: 145px 80px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
           `}
         >
           <motion.div
@@ -247,9 +239,10 @@ const Main = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ ease: "easeOut", duration: 1 }}
             style={{
-              fontSize: "6rem",
+              fontSize: "5rem",
               fontWeight: "600",
               color: "#23262F",
+              marginBottom: "20px",
             }}
           >
             지금 여행을
@@ -261,53 +254,40 @@ const Main = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ ease: "easeOut", duration: 1 }}
             css={css`
-              font-size: 3rem;
+              font-size: 2.5rem;
               font-weight: 500;
               color: #23262f;
             `}
           >
-            실시간으로 다양한 여행지를 탐색해보세요.
+            여러 사람들과 함께 계획을 세워보세요.
+          </motion.div>
+
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ ease: "easeOut", duration: 1 }}
+            css={css`
+              margin-top: 60px;
+            `}
+          >
+            <LLink
+              to={"/dashboard"}
+              css={css`
+                color: white;
+                font-size: 18px;
+                font-weight: 500;
+                transform: none;
+                background-color: #1e52e2;
+                border-radius: 100px;
+                height: 56px;
+                min-width: 56px;
+                padding: 12px 24px;
+              `}
+            >
+              시작하기
+            </LLink>
           </motion.div>
         </div>
-        <form
-          onSubmit={handleSubmit}
-          css={css`
-            position: absolute;
-            bottom: -4vh;
-            left: 50%;
-            transform: translate(-50%);
-            text-align: center;
-            width: 80%;
-            display: flex;
-            padding: 40px;
-            box-sizing: border-box;
-            justify-content: space-evenly;
-            z-index: 5;
-            align-items: center;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0px 40px 64px -32px rgb(15 15 15 / 10%);
-          `}
-        >
-          <Wrapper>
-            <p>여행 제목</p>
-            <input
-              name="title"
-              placeholder="매력적인 제목을 붙여보세요"
-              required
-            />
-          </Wrapper>
-          <Wrapper>
-            <p>시작일</p>
-            <input name="dayStart" type="date" required />
-          </Wrapper>
-          <ArrowImg src="/arrow.svg" />
-          <Wrapper>
-            <p>도착일</p>
-            <input name="dayEnd" type="date" required />
-          </Wrapper>
-          <SubmitBtn />
-        </form>
       </motion.div>
     </div>
   );
