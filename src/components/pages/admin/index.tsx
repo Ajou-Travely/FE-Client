@@ -112,13 +112,14 @@ const SideBar = () => {
         min-width: 250px;
       `}
     >
-      <div
+      <a
         css={css`
           padding: 24px;
         `}
+        href="/dashboard"
       >
         <Logo color="#1e52e2" />
-      </div>
+      </a>
 
       <div
         css={css`
