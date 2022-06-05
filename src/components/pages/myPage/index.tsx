@@ -17,7 +17,6 @@ const MyPage = () => {
   const submitMyInfo = () => {
     updateMyInfo({
       name: nameRef.current?.value,
-      email: emailRef.current?.value,
       phoneNumber: phoneNumberRef.current?.value,
     });
   };
@@ -100,9 +99,6 @@ const MyPage = () => {
               >
                 <p>
                   이름 : <input ref={nameRef} />
-                </p>
-                <p>
-                  이메일 : <input ref={emailRef} />
                 </p>
                 <p>
                   전화번호 : <input ref={phoneNumberRef} />

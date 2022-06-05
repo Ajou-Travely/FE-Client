@@ -35,7 +35,7 @@ import Event from "./pages/Event";
 import Cost from "./pages/Cost";
 import TravelDetail from "./pages/TravelDetail";
 
-const LLink = styled(Link)`
+export const LLink = styled(Link)`
   text-decoration: none;
 
   &:focus,
@@ -113,13 +113,14 @@ const SideBar = () => {
         min-width: 250px;
       `}
     >
-      <div
+      <a
         css={css`
           padding: 24px;
         `}
+        href="/dashboard"
       >
         <Logo color="#1e52e2" />
-      </div>
+      </a>
 
       <div
         css={css`
