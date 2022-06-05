@@ -1,5 +1,8 @@
 
 import { css } from "@emotion/react";
+import axios from "axios";
+
+const createNoticeUrl = 'https://api.dev.travely.guide/v1/notices';
 
 const handleSubmit = (e) => {
     e.preventDefault();
@@ -9,6 +12,11 @@ const handleSubmit = (e) => {
     formData.append('title', e.target[0].value);
     formData.append('content', e.target[1].value);
     formData.append('photos', files);
+
+    axios.post(createNoticeUrl, {
+        data: formData
+    }).then((res) => console.log)
+    .catch((error) => console.log);
 }
 
 const CreateNoticeModal = (props) => {
