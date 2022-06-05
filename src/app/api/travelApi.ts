@@ -99,42 +99,6 @@ const travelApi = baseApi
             date: date,
           },
         }),
-        onQueryStarted: async (
-          args,
-          {
-            dispatch,
-            getState,
-            extra,
-            requestId,
-            queryFulfilled,
-            getCacheEntry,
-          }
-        ) => {
-          const patchResult = dispatch(
-            travelApi.util.updateQueryData(
-              "getTravel",
-              args.travelId,
-              (draft) => {
-                draft.dates.find(
-                  (date) => date.date === args.date
-                )!.scheduleOrders = args.scheduleOrder;
-              }
-            )
-          );
-
-          try {
-            const response = await queryFulfilled;
-            socket.emit("scheduleOrderChange", {
-              travelId: args.travelId,
-              data: {
-                date: args.date,
-                scheduleOrder: args.scheduleOrder,
-              },
-            });
-          } catch (e) {
-            patchResult.undo();
-          }
-        },
       }),
 
       createTravelDate: builder.mutation<
@@ -155,7 +119,7 @@ const travelApi = baseApi
         { startDate: string; endDate: string; travelId: string }
       >({
         query: (args) => ({
-          url: TRAVEL_BASE_URL + `/${args.travelId}/dates`,
+          url: `${TRAVEL_BASE_URL}/${args.travelId}/dates`,
           method: "PUT",
           body: {
             startDate: args.startDate,
@@ -227,9 +191,7 @@ const travelApi = baseApi
         }
       >({
         query: (args) => ({
-          url:
-            TRAVEL_BASE_URL +
-            `/${args.travelId}/schedules/${args.scheduleId}/photos`,
+          url: `${TRAVEL_BASE_URL}/${args.travelId}/schedules/${args.scheduleId}/photos`,
           method: "POST",
           body: args.photos,
         }),
@@ -240,7 +202,7 @@ const travelApi = baseApi
               "getTravel",
               args.travelId,
               (draft) => {
-                draft.dates["schedules"]
+                draft.dates.schedules
                   .filter(({ scheduleId }) => scheduleId === args.scheduleId)[0]
                   .photos.push(updateResponse.data);
               }

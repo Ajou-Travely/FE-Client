@@ -122,8 +122,12 @@ const TravelEditPage = () => {
   const [selectedDate, setSelectedDate] = useState<string>("");
   useEffect(() => {
     if (travelData === undefined) return;
-    setSelectedDate(travelData.dates[0].date);
-  }, [travelData]);
+
+    if (selectedDate === "") {
+      setSelectedDate(travelData.dates[0].date);
+    }
+  }, [travelData, selectedDate]);
+
   const selectedDateSchedules = useMemo(() => {
     if (!travelData || !selectedDate) return [];
 
@@ -161,7 +165,7 @@ const TravelEditPage = () => {
         }
       );
 
-      return routeResponse.data;
+      return routeResponse.data ?? undefined;
     }
 
     const promises: Promise<any>[] = [];
@@ -416,11 +420,14 @@ const TravelEditPage = () => {
               travelId={travelId!}
               data={selectedDateSchedules}
               updateData={(updatedData: IScheduleResponse[]) => {
-                console.log("Outer Update Data", updatedData);
+                const updatedScheduleOrder = updatedData.map(
+                  (data) => data.scheduleId
+                );
+
                 updateScheduleOrder({
                   travelId: travelId!,
                   date: selectedDate!,
-                  scheduleOrder: updatedData.map((data) => data.scheduleId),
+                  scheduleOrder: updatedScheduleOrder,
                 });
                 dispatch(
                   travelApi.util.updateQueryData(
@@ -429,10 +436,17 @@ const TravelEditPage = () => {
                     (draft) => {
                       draft.dates.find(
                         (date) => date.date === selectedDate
-                      )!.schedules = updatedData;
+                      )!.scheduleOrders = updatedScheduleOrder;
                     }
                   )
                 );
+                client.current!.emit("scheduleOrderChange", {
+                  travelId: travelId!,
+                  data: {
+                    date: selectedDate!,
+                    scheduleOrder: updatedScheduleOrder,
+                  },
+                });
               }}
             />
             <div
@@ -512,8 +526,7 @@ const TravelEditPage = () => {
           {Object.entries(sharedCursors).map(([k, v]) => (
             <CustomOverlayMap position={v}>
               <div>
-                <BiPointer color={"purple"} size={24}>
-                </BiPointer>
+                <BiPointer color="purple" size={24} />
                 {k}
               </div>
             </CustomOverlayMap>
