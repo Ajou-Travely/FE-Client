@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
+import UploadFeedModal from "@src/components/organisms/uploadFeedModal";
 import UploadImageModal from "@src/components/organisms/uploadImageModal";
 import { theme } from "@src/styles/theme";
 import { useCallback, useEffect, useState } from "react";
-import { BiPlus } from "react-icons/bi";
+import { BiCommentAdd, BiPlus } from "react-icons/bi";
 
 interface Props {
   travelData: any;
@@ -37,8 +38,18 @@ const Marker = ({ children }: { children: any }) => {
 
 const ImageFeed = ({ travelData, travelId }: Props) => {
   const [createDateImageOpened, setCreateImageModalOpened] = useState(false);
+  const [createFeedOpened, setCreateFeedOpened] = useState(false);
   const [scheduleId, setScheduleId] = useState("");
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const openCreateFeedModal = useCallback((id: string) => {
+    setScheduleId(id);
+    setCreateFeedOpened(true);
+  }, []);
+
+  const closeCreateFeedModal = useCallback(() => {
+    setScheduleId("");
+    setCreateFeedOpened(false);
+  }, []);
   const openCreateImageModal = useCallback((id: string) => {
     setScheduleId(id);
     setCreateImageModalOpened(true);
@@ -68,6 +79,14 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
           scheduleId={scheduleId}
           onClose={closeCreateImageModal}
           onSuccess={closeCreateImageModal}
+        />
+      )}
+      {createFeedOpened && (
+        <UploadFeedModal
+          travelId={travelId!}
+          scheduleId={scheduleId}
+          onClose={closeCreateFeedModal}
+          onSuccess={closeCreateFeedModal}
         />
       )}
       <div
@@ -116,8 +135,9 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
       </div>
       <div
         css={css`
-          padding: 1rem;
+          padding: 2rem;
           height: 50vh;
+          width: 100%;
           overflow: auto;
         `}
       >
@@ -131,9 +151,11 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
                 <>
                   <div
                     css={css`
+                      width: 100%;
                       display: flex;
                       align-items: center;
-                      column-gap: 1rem;
+                      justify-content: center;
+                      column-gap: 2rem;
                       border-radius: 10px;
                       padding: 1rem;
                       box-shadow: 0px 0px 3px ${theme.colors.shadow};
@@ -154,6 +176,18 @@ const ImageFeed = ({ travelData, travelId }: Props) => {
                       </strong>
                       <p>{data.place.addressName}</p>
                     </div>
+                    <BiCommentAdd
+                      css={css`
+                        width: 1.2rem;
+                        height: 1.2rem;
+
+                        cursor: pointer;
+                        :hover {
+                          opacity: 50%;
+                        }
+                      `}
+                      onClick={() => openCreateFeedModal(data.scheduleId)}
+                    />
                   </div>
                   <div
                     css={css`

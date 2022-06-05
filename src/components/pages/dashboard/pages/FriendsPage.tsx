@@ -7,8 +7,9 @@ import friendApi from "@src/app/api/friendApi";
 import travelApi from "@src/app/api/travelApi";
 
 const BtnWarpper = styled.div`
-  width: 100%;
-  background: #ababab;
+  display: grid;
+  width: 20vw;
+  grid-template-columns: repeat(3, 1fr);
 `;
 
 const Button = styled.button<{ state: boolean }>`
@@ -63,7 +64,6 @@ const UserContainer = styled.div`
 const FriendsListContainer = styled.div`
   width: 20vw;
   height: 100%;
-  box-shadow: 0px 0px 3px ${theme.colors.shadow};
   background: white;
   box-sizing: border-box;
   padding: 1rem;
@@ -129,8 +129,7 @@ function FriendsPage() {
   const [deleteFriends] = friendApi.useDeleteFriendsMutation();
   const [acceptRequest] = friendApi.useAcceptFriendsRequestMutation();
   const [rejectRequest] = friendApi.useRejectFriendsRequestMutation();
-  const [cancelRequest] = friendApi.
-  useCancelFriendsRequestMutation();
+  const [cancelRequest] = friendApi.useCancelFriendsRequestMutation();
   const addEmailRef = useRef<HTMLInputElement>(null);
   const [type, setType] = useState<"list" | "given" | "giving">("list");
   const handleAddFriends = () => {
@@ -149,6 +148,7 @@ if(isSuccess)
         height: calc(100vh - 80px);
         display: flex;
         flex-direction: column;
+        box-shadow: 0px 0px 3px ${theme.colors.shadow};
       `}
     >
       <BtnWarpper>

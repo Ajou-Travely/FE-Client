@@ -1,6 +1,10 @@
-import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
-import { travelLocations } from "@pages/liveSchedule/dummyData";
-import { BiPlus, BiCalendar, BiMapPin } from "react-icons/bi";
+import {
+  CustomOverlayMap,
+  Map,
+  MapMarker,
+  Polyline,
+} from "react-kakao-maps-sdk";
+import { BiPlus, BiCalendar, BiMapPin, BiPointer } from "react-icons/bi";
 import React, {
   useCallback,
   useEffect,
@@ -8,25 +12,23 @@ import React, {
   useRef,
   useState,
 } from "react";
-import InnerDashBoard from "@organisms/dashBoard/inner";
 import { css } from "@emotion/react";
-import LabelBtn from "@src/components/atoms/button/label";
 import { useParams } from "react-router-dom";
 import { api, IScheduleResponse } from "@src/app/api/api";
 import axios from "axios";
 import ListProto from "@pages/dashboard/components/timeline/ListProto";
 import SplitBill from "@pages/dashboard/components/timeline/SplitBill";
 import CreateTravelDateModal from "@pages/dashboard/CreateTravelDateModal";
-import { Avartar } from "@src/components/organisms/scheduleElement/styles";
 import styled from "@emotion/styled";
 import { useAppDispatch } from "@src/app/hooks";
 import travelApi from "@src/app/api/travelApi";
 import _ from "lodash";
 import TextAvatar from "@src/components/atoms/textAvatar";
 import socketClient, { Socket } from "socket.io-client";
-import { RootState } from "@src/app/store";
+import { RootState, store } from "@src/app/store";
 import { theme } from "@src/styles/theme";
 import SearchModal from "@src/components/organisms/searchModal";
+import produce from "immer";
 import ImageFeed from "../components/imageFeed";
 
 const BtnWarpper = styled.div`
@@ -53,7 +55,61 @@ const dummyCenter = {
 const TravelEditPage = () => {
   const { travelId } = useParams<"travelId">();
 
+  const client = useRef<Socket>();
   const dispatch = useAppDispatch();
+
+  const [sharedCursors, setSharedCursors] = useState<{
+    [ownerId: string]: { lat: number; lng: number };
+  }>({});
+
+  useEffect(() => {
+    console.log(sharedCursors);
+  }, [sharedCursors]);
+
+  useEffect(() => {
+    const socket = socketClient("http://123.214.75.32:9999/", {
+      transports: ["websocket"],
+      auth: {
+        token: store.getState().auth.token,
+      },
+      query: {
+        travelId: travelId,
+        userId: 1,
+      },
+    });
+
+    socket.on("scheduleOrderChanged", (message) => {
+      dispatch(
+        travelApi.util.updateQueryData("getTravel", travelId!, (draft) => {
+          draft.dates.find(
+            (date) => date.date === message.date
+          )!.scheduleOrders = message.scheduleOrder;
+        })
+      );
+    });
+
+    socket.on("scheduleAdded", (message) => {
+      console.log("scheduleAdded", message);
+    });
+
+    socket.on(
+      "mapCursorChanged",
+      (message: { ownerId: number; data: { lat: number; lng: number } }) => {
+        console.log("mapCursorChanged", message);
+        setSharedCursors(
+          produce((draft) => {
+            draft[message.ownerId] = message.data;
+          })
+        );
+      }
+    );
+
+    client.current = socket;
+
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   const [type, setType] = useState("schedule");
 
@@ -66,8 +122,12 @@ const TravelEditPage = () => {
   const [selectedDate, setSelectedDate] = useState<string>("");
   useEffect(() => {
     if (travelData === undefined) return;
-    setSelectedDate(travelData.dates[0].date);
-  }, [travelData]);
+
+    if (selectedDate === "") {
+      setSelectedDate(travelData.dates[0].date);
+    }
+  }, [travelData, selectedDate]);
+
   const selectedDateSchedules = useMemo(() => {
     if (!travelData || !selectedDate) return [];
 
@@ -105,7 +165,7 @@ const TravelEditPage = () => {
         }
       );
 
-      return routeResponse.data;
+      return routeResponse.data ?? undefined;
     }
 
     const promises: Promise<any>[] = [];
@@ -211,7 +271,14 @@ const TravelEditPage = () => {
   const mouseMoveOnMapEvent = useCallback(
     _.throttle((target, mouseEvent) => {
       console.log(mouseEvent.latLng);
-    }, 500),
+      client.current?.emit("mapCursorChange", {
+        travelId: travelId!,
+        data: {
+          lat: mouseEvent.latLng.getLat(),
+          lng: mouseEvent.latLng.getLng(),
+        },
+      });
+    }, 10),
     []
   );
 
@@ -353,11 +420,14 @@ const TravelEditPage = () => {
               travelId={travelId!}
               data={selectedDateSchedules}
               updateData={(updatedData: IScheduleResponse[]) => {
-                console.log("Outer Update Data", updatedData);
+                const updatedScheduleOrder = updatedData.map(
+                  (data) => data.scheduleId
+                );
+
                 updateScheduleOrder({
                   travelId: travelId!,
                   date: selectedDate!,
-                  scheduleOrder: updatedData.map((data) => data.scheduleId),
+                  scheduleOrder: updatedScheduleOrder,
                 });
                 dispatch(
                   travelApi.util.updateQueryData(
@@ -366,10 +436,17 @@ const TravelEditPage = () => {
                     (draft) => {
                       draft.dates.find(
                         (date) => date.date === selectedDate
-                      )!.schedules = updatedData;
+                      )!.scheduleOrders = updatedScheduleOrder;
                     }
                   )
                 );
+                client.current!.emit("scheduleOrderChange", {
+                  travelId: travelId!,
+                  data: {
+                    date: selectedDate!,
+                    scheduleOrder: updatedScheduleOrder,
+                  },
+                });
               }}
             />
             <div
@@ -446,6 +523,14 @@ const TravelEditPage = () => {
           onMouseMove={mouseMoveOnMapEvent}
           style={{ width: "100%", height: "100%" }}
         >
+          {Object.entries(sharedCursors).map(([k, v]) => (
+            <CustomOverlayMap position={v}>
+              <div>
+                <BiPointer color="purple" size={24} />
+                {k}
+              </div>
+            </CustomOverlayMap>
+          ))}
           {seletedPosition && (
             <MapMarker // 마커를 생성합니다
               position={seletedPosition}

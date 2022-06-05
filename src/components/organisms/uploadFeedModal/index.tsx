@@ -1,32 +1,35 @@
 import { css } from "@emotion/react";
-import travelApi from "@src/app/api/travelApi";
+import { width } from "@mui/system";
+import postApi from "@src/app/api/postApi";
 import { theme } from "@src/styles/theme";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiPlus } from "react-icons/bi";
 import Modal from "../modal";
 
-interface IUploadImageModalProps {
+interface IUploadFeedModalProps {
   travelId: string;
   scheduleId: string;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-const UploadImageModal = ({
+const UploadFeedModal = ({
   travelId,
   scheduleId,
   onClose,
   onSuccess,
-}: IUploadImageModalProps) => {
+}: IUploadFeedModalProps) => {
   const [image, setImage] = useState<{ preview: string; raw: any }[]>([]);
-  console.log(scheduleId);
-  const [uploadImage, { error, isSuccess, isLoading }] =
-    travelApi.useUploadSchedulePhotosMutation();
+  const titleRef = useRef<HTMLInputElement>(null);
+  const textRef = useRef<HTMLTextAreaElement>(null);
+  const [createpost] = postApi.useCreatePostMutation();
+  useEffect(() => {
+    console.log(image);
+  }, [image]);
 
   const handleRemoveImage = (url: string) => {
     setImage(image.filter(({ preview }) => preview !== url));
   };
-
   const handleChange = (e: any) => {
     if (e.target.files.length) {
       const file = e.target.files[0];
@@ -43,18 +46,16 @@ const UploadImageModal = ({
 
   const handleUpload = async (e: any) => {
     e.preventDefault();
-    const photos = new FormData();
+    const formData = new FormData();
     for (let i in image) {
-      photos.append("photos", image[i].raw);
+      formData.append("photos", image[i].raw);
     }
-    uploadImage({ travelId, scheduleId, photos });
+    formData.append("scheduleId", scheduleId);
+    formData.append("title", titleRef.current?.value ?? "");
+    formData.append("text", textRef.current?.value ?? "");
+    createpost(formData);
     onClose();
   };
-  useEffect(() => {
-    if (isSuccess) {
-      onSuccess();
-    }
-  }, [isSuccess]);
   return (
     <Modal onClick={onClose}>
       <div
@@ -63,14 +64,15 @@ const UploadImageModal = ({
           background: white;
           border-radius: 10px;
           width: 20vw;
-          height: 40vh;
+          height: 60vh;
           display: flex;
           flex-direction: column;
-
-          padding: 1rem;
+          padding: 2rem;
+          justify-self: center;
+          text-align: center;
         `}
       >
-        <h3>사진을 업로드 해보세요!</h3>
+        <h3>피드를 업로드 해보세요!</h3>
         <div
           css={css`
             padding: 0.1rem;
@@ -115,6 +117,24 @@ const UploadImageModal = ({
             />
           ))}
         </div>
+        <p>제목을 입력해주세요</p>
+        <input
+          css={css`
+            border: none;
+            border-bottom: 1px solid grey;
+          `}
+          ref={titleRef}
+          placeholder="문구"
+        />
+        <p>내용을 입력해주세요</p>
+        <textarea
+          css={css`
+            border: none;
+            border-bottom: 1px solid grey;
+          `}
+          ref={textRef}
+          placeholder="입력"
+        />
         <div
           css={css`
             position: absolute;
@@ -148,4 +168,4 @@ const UploadImageModal = ({
   );
 };
 
-export default UploadImageModal;
+export default UploadFeedModal;
