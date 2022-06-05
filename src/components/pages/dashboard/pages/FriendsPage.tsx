@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import friendApi from "@src/app/api/friendApi";
 import travelApi from "@src/app/api/travelApi";
 import TextAvatar from "@src/components/atoms/textAvatar";
+import { BiMailSend, BiSearchAlt2 } from "react-icons/bi";
+import FriendsDetail from "@src/components/organisms/friendsDetail";
 
 const BtnWarpper = styled.div`
   display: grid;
@@ -87,23 +89,31 @@ function FriendsPage() {
 
   // const { data: friends } = friendApi.useGetFriendsQuery();
 
-  const { data: friendsData ,isSuccess,isLoading} = friendApi.useGetFriendsQuery();
+  const {
+    data: friendsData,
+    isSuccess,
+    isLoading,
+  } = friendApi.useGetFriendsQuery();
 
   const [friends, setFriends] = useState<IUserResponse[]>([]);
 
   const [searchField, setSearchField] = useState<string>("");
 
-// useEffect(()=>{
-//  setFriends(friendsData);
-// },[isSuccess])
+  // useEffect(()=>{
+  //  setFriends(friendsData);
+  // },[isSuccess])
 
   useEffect(() => {
-    setFriends(friendsData?.content.filter(f => f.userName.replace(/ /g, "").includes(searchField.replace(/ /g, ""))))
-}, [searchField])
+    setFriends(
+      friendsData?.content.filter((f) =>
+        f.userName.replace(/ /g, "").includes(searchField.replace(/ /g, ""))
+      )
+    );
+  }, [searchField]);
 
-  
   const { data: givenRequestData } = friendApi.useGetGivenRequestsQuery();
   const { data: givingRequestData } = friendApi.useGetGivingRequestsQuery();
+  const [friend, setFriend] = useState<string>();
   const [sendEmail] = friendApi.useSendEmailMutation();
   const [deleteFriends] = friendApi.useDeleteFriendsMutation();
   const [acceptRequest] = friendApi.useAcceptFriendsRequestMutation();
@@ -119,295 +129,377 @@ function FriendsPage() {
       return;
     sendEmail(addEmailRef.current?.value);
   };
-  if(isLoading) return <p>loading...</p>
-if(isSuccess)
-  return (
-    <div
-      css={css`
-        height: calc(100vh - 80px);
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0px 0px 3px ${theme.colors.shadow};
-      `}
-    >
-      <BtnWarpper>
-        <Button state={type === "list"} onClick={() => setType("list")}>
-          친구목록
-        </Button>
-        <Button state={type === "giving"} onClick={() => setType("giving")}>
-          보낸요청
-        </Button>
-        <Button state={type === "given"} onClick={() => setType("given")}>
-          받은요청
-        </Button>
-      </BtnWarpper>
-      <Container>
-        <FriendsListContainer>
-          {type === "list" && (
-            <>
-              <div
-                css={css`
-                  display: flex;
-                  button {
-                    white-space: nowrap;
-                  }
-                `}
-              >
-                <input
-                  placeholder="친구를 검색해보세요!"
+  if (isLoading) return <p>loading...</p>;
+  if (isSuccess)
+    return (
+      <div
+        css={css`
+          height: calc(100vh - 80px);
+          display: flex;
+          flex-direction: column;
+          box-shadow: 0px 0px 3px ${theme.colors.shadow};
+        `}
+      >
+        <BtnWarpper>
+          <Button state={type === "list"} onClick={() => setType("list")}>
+            친구목록
+          </Button>
+          <Button state={type === "giving"} onClick={() => setType("giving")}>
+            보낸요청
+          </Button>
+          <Button state={type === "given"} onClick={() => setType("given")}>
+            받은요청
+          </Button>
+        </BtnWarpper>
+        <Container>
+          <FriendsListContainer>
+            {type === "list" && (
+              <>
+                <div
                   css={css`
-                    width: 100%;
+                    display: flex;
+                    button {
+                      white-space: nowrap;
+                    }
                   `}
-                  onChange={e => {
-                    setSearchField(e.target.value);
-                  }}
-                />
-                {/* <button>검색</button> */}
-              </div>
-              {searchField===''? friendsData.content?.map(
-                  ({ profilePath, userId, userName }) => (
-                    <UserContainer key={1}>
-                      <img src={profilePath} />
-                      <p>{userName}</p>
-                      <p onClick={() => deleteFriends(userId)}>
-                        <img src="/cancel.svg" />
-                      </p>
-                    </UserContainer>
-                  )
-                ):friends?.map(
-                  ({ profilePath, userId, userName }) => (
-                    <UserContainer key={1}>
-                      <div
-                        css={css`
-                          display: flex;
-                          align-items: center;
-                          column-gap: 1rem;
-                          img {
-                            width: 2rem;
-                            height: 2rem;
-                            border-radius: 100vw;
-                          }
-                        `}
-                      >
-                        {profilePath === null ? (
-                          <TextAvatar
-                            name={userName}
-                            width="3rem"
-                            height="3rem"
-                            size={1.6}
-                          />
-                        ) : (
-                          <img
-                            css={css`
-                              width: 3rem;
-                              height: 3rem;
-                            `}
-                            src={profilePath}
-                          />
-                        )}
-                        <div
-                          css={css`
-                            * {
-                              margin: 0px;
-                            }
-                            p:nth-child(2) {
-                              font-size: smaller;
-                              color: grey;
-                            }
-                          `}
-                        >
-                          <p>{userName}</p>
-                          <p>{userId}</p>
-                        </div>
-                      </div>
-                      <p
-                        css={css`
-                          border-radius: 5px;
-                          padding: 0.1rem;
-                          border: 0.1rem solid grey;
-                          cursor: pointer;
-                          :hover {
-                            opacity: 50%;
-                          }
-                        `}
-                        onClick={() => deleteFriends(userId)}
-                      >
-                        삭제
-                      </p>
-                    </UserContainer>
-                  )
-                )}
-            </>
-          )}
-
-          {type === "given" && (
-            <>
-              {givenRequestData !== undefined &&
-                givenRequestData?.content.map(
-                  ({ profilePath, userId, userName }) => (
-                    <UserContainer
-                      key={userId}
+                >
+                  <div
+                    css={css`
+                      width: 100%;
+                      position: relative;
+                      align-items: center;
+                    `}
+                  >
+                    <BiSearchAlt2
                       css={css`
-                        height: 6rem;
-                        flex-direction: column;
+                        position: absolute;
+                        top: 0.2rem;
+                        left: 0.2rem;
                       `}
-                    >
-                      <div
-                        css={css`
-                          display: flex;
-                          align-items: center;
-                          column-gap: 1rem;
-                          img {
-                            width: 2rem;
-                            height: 2rem;
-                            border-radius: 100vw;
-                          }
-                        `}
-                      >
-                        {profilePath === null ? (
-                          <TextAvatar
-                            name={userName}
-                            width="3rem"
-                            height="3rem"
-                            size={1.6}
-                          />
-                        ) : (
-                          <img
+                    />
+                    <input
+                      placeholder="친구를 검색해보세요!"
+                      css={css`
+                        width: 100%;
+                        padding: 0px 0px 0px 1.2rem;
+                      `}
+                      onChange={(e) => {
+                        setSearchField(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                {searchField === ""
+                  ? friendsData.content?.map(
+                      ({ profilePath, userId, userName, email }) => (
+                        <UserContainer key={1}>
+                          <div
                             css={css`
-                              width: 3rem;
-                              height: 3rem;
+                              display: flex;
+                              align-items: center;
+                              column-gap: 1rem;
+                              img {
+                                width: 2rem;
+                                height: 2rem;
+                                border-radius: 100vw;
+                              }
+                              cursor: pointer;
+                              :hover {
+                                opacity: 50%;
+                              }
                             `}
-                            src={profilePath}
-                          />
-                        )}
+                            onClick={() => setFriend(userId)}
+                          >
+                            {profilePath === null ? (
+                              <TextAvatar
+                                name={userName}
+                                width="3rem"
+                                height="3rem"
+                                size={1.6}
+                              />
+                            ) : (
+                              <img
+                                css={css`
+                                  width: 3rem;
+                                  height: 3rem;
+                                `}
+                                src={profilePath}
+                              />
+                            )}
+                            <div
+                              css={css`
+                                * {
+                                  margin: 0px;
+                                }
+                                p:nth-child(2) {
+                                  font-size: 2px;
+                                  color: grey;
+                                }
+                              `}
+                            >
+                              <p>{userName}</p>
+                              <p>{email}</p>
+                            </div>
+                          </div>
+                          <p
+                            css={css`
+                              border-radius: 5px;
+                              padding: 0.1rem;
+                              border: 0.1rem solid grey;
+                              cursor: pointer;
+                              :hover {
+                                opacity: 50%;
+                              }
+                            `}
+                            onClick={() => deleteFriends(userId)}
+                          >
+                            삭제
+                          </p>
+                        </UserContainer>
+                      )
+                    )
+                  : friends?.map(({ profilePath, userId, userName, email }) => (
+                      <UserContainer key={1}>
                         <div
                           css={css`
-                            * {
-                              margin: 0px;
-                            }
-                            p:nth-child(2) {
-                              font-size: smaller;
-                              color: grey;
+                            display: flex;
+                            align-items: center;
+                            column-gap: 1rem;
+                            img {
+                              width: 2rem;
+                              height: 2rem;
+                              border-radius: 100vw;
                             }
                           `}
                         >
-                          <p>{userName}</p>
-                          <p>{userId}</p>
+                          {profilePath === null ? (
+                            <TextAvatar
+                              name={userName}
+                              width="3rem"
+                              height="3rem"
+                              size={1.6}
+                            />
+                          ) : (
+                            <img
+                              css={css`
+                                width: 3rem;
+                                height: 3rem;
+                              `}
+                              src={profilePath}
+                            />
+                          )}
+                          <div
+                            css={css`
+                              * {
+                                margin: 0px;
+                              }
+                              p:nth-child(2) {
+                                font-size: 2px;
+                                color: grey;
+                              }
+                            `}
+                          >
+                            <p>{userName}</p>
+                            <p>{email}</p>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        css={css`
-                          display: flex;
-                          width: 100%;
-                          justify-content: space-between;
-                          svg {
-                            width: 1rem;
-                            height: 1rem;
+                        <p
+                          css={css`
+                            border-radius: 5px;
+                            padding: 0.1rem;
+                            border: 0.1rem solid grey;
                             cursor: pointer;
                             :hover {
                               opacity: 50%;
                             }
-                          }
-                        `}
-                      >
-                        <Cancel onClick={() => rejectRequest(userId)} />
-                        <Check onClick={() => acceptRequest(userId)} />
-                      </div>
-                    </UserContainer>
-                  )
-                )}
-            </>
-          )}
-          {type === "giving" && (
-            <>
-              <div
-                css={css`
-                  display: flex;
-                  button {
-                    white-space: nowrap;
-                  }
-                `}
-              >
-                <input
-                  css={css`
-                    width: 100%;
-                  `}
-                  ref={addEmailRef}
-                />
-                <button onClick={handleAddFriends}>추가</button>
-              </div>
-              {givingRequestData !== undefined &&
-                givingRequestData?.content.map(
-                  ({ profilePath, userId, userName }) => (
-                    <UserContainer key={1}>
-                      <div
+                          `}
+                          onClick={() => deleteFriends(userId)}
+                        >
+                          삭제
+                        </p>
+                      </UserContainer>
+                    ))}
+              </>
+            )}
+
+            {type === "given" && (
+              <>
+                {givenRequestData !== undefined &&
+                  givenRequestData?.content.map(
+                    ({ profilePath, userId, userName, email }) => (
+                      <UserContainer
+                        key={userId}
                         css={css`
-                          display: flex;
-                          align-items: center;
-                          column-gap: 1rem;
-                          img {
-                            width: 2rem;
-                            height: 2rem;
-                            border-radius: 100vw;
-                          }
+                          height: 6rem;
+                          flex-direction: column;
                         `}
                       >
-                        {profilePath === null ? (
-                          <TextAvatar
-                            name={userName}
-                            width="3rem"
-                            height="3rem"
-                            size={1.6}
-                          />
-                        ) : (
-                          <img
-                            css={css`
-                              width: 3rem;
-                              height: 3rem;
-                            `}
-                            src={profilePath}
-                          />
-                        )}
                         <div
                           css={css`
-                            * {
-                              margin: 0px;
-                            }
-                            p:nth-child(2) {
-                              font-size: smaller;
-                              color: grey;
+                            display: flex;
+                            align-items: center;
+                            column-gap: 1rem;
+                            img {
+                              width: 2rem;
+                              height: 2rem;
+                              border-radius: 100vw;
                             }
                           `}
                         >
-                          <p>{userName}</p>
-                          <p>{userId}</p>
+                          {profilePath === null ? (
+                            <TextAvatar
+                              name={userName}
+                              width="3rem"
+                              height="3rem"
+                              size={1.6}
+                            />
+                          ) : (
+                            <img
+                              css={css`
+                                width: 3rem;
+                                height: 3rem;
+                              `}
+                              src={profilePath}
+                            />
+                          )}
+                          <div
+                            css={css`
+                              * {
+                                margin: 0px;
+                              }
+                              p:nth-child(2) {
+                                font-size: 2px;
+                                color: grey;
+                              }
+                            `}
+                          >
+                            <p>{userName}</p>
+                            <p>{email}</p>
+                          </div>
                         </div>
-                      </div>
-                      <p
-                        css={css`
-                          border-radius: 5px;
-                          padding: 0.1rem;
-                          border: 0.1rem solid grey;
-                          cursor: pointer;
-                          :hover {
-                            opacity: 50%;
-                          }
-                        `}
-                        onClick={() => cancelRequest(userId)}
-                      >
-                        삭제
-                      </p>
-                    </UserContainer>
-                  )
-                )}
-            </>
-          )}
-        </FriendsListContainer>
-        <FriendsDetailContainer></FriendsDetailContainer>
-      </Container>
-    </div>
-  );
-  else return <p>error</p>
+                        <div
+                          css={css`
+                            display: flex;
+                            width: 100%;
+                            justify-content: space-between;
+                            svg {
+                              width: 1rem;
+                              height: 1rem;
+                              cursor: pointer;
+                              :hover {
+                                opacity: 50%;
+                              }
+                            }
+                          `}
+                        >
+                          <Cancel onClick={() => rejectRequest(userId)} />
+                          <Check onClick={() => acceptRequest(userId)} />
+                        </div>
+                      </UserContainer>
+                    )
+                  )}
+              </>
+            )}
+            {type === "giving" && (
+              <>
+                <div
+                  css={css`
+                    display: flex;
+                    align-items: center;
+                    column-gap: 1rem;
+                  `}
+                >
+                  <input
+                    css={css`
+                      width: 100%;
+                    `}
+                    ref={addEmailRef}
+                    placeholder="이메일을 입력해주세요"
+                  />
+                  <BiMailSend
+                    css={css`
+                      width: 1.2rem;
+                      height: 1.2rem;
+                      cursor: pointer;
+                      :hover {
+                        opacity: 50%;
+                      }
+                    `}
+                    onClick={handleAddFriends}
+                  />
+                </div>
+                {givingRequestData !== undefined &&
+                  givingRequestData?.content.map(
+                    ({ profilePath, userId, userName }) => (
+                      <UserContainer key={1}>
+                        <div
+                          css={css`
+                            display: flex;
+                            align-items: center;
+                            column-gap: 1rem;
+                            img {
+                              width: 2rem;
+                              height: 2rem;
+                              border-radius: 100vw;
+                            }
+                          `}
+                        >
+                          {profilePath === null ? (
+                            <TextAvatar
+                              name={userName}
+                              width="3rem"
+                              height="3rem"
+                              size={1.6}
+                            />
+                          ) : (
+                            <img
+                              css={css`
+                                width: 3rem;
+                                height: 3rem;
+                              `}
+                              src={profilePath}
+                            />
+                          )}
+                          <div
+                            css={css`
+                              * {
+                                margin: 0px;
+                              }
+                              p:nth-child(2) {
+                                font-size: smaller;
+                                color: grey;
+                              }
+                            `}
+                          >
+                            <p>{userName}</p>
+                            <p>{userId}</p>
+                          </div>
+                        </div>
+                        <p
+                          css={css`
+                            border-radius: 5px;
+                            padding: 0.1rem;
+                            border: 0.1rem solid grey;
+                            cursor: pointer;
+                            :hover {
+                              opacity: 50%;
+                            }
+                          `}
+                          onClick={() => cancelRequest(userId)}
+                        >
+                          삭제
+                        </p>
+                      </UserContainer>
+                    )
+                  )}
+              </>
+            )}
+          </FriendsListContainer>
+          <FriendsDetail targetId={friend!} />
+        </Container>
+      </div>
+    );
+  else return <p>error</p>;
 }
 
 export default FriendsPage;
