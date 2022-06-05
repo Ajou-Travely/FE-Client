@@ -141,10 +141,12 @@ const ListProto = ({
   travelId,
   data: outerData,
   updateData,
+  routeData,
 }: {
   travelId: string;
   data: any[];
   updateData: (newData: any) => void;
+  routeData: any[];
 }) => {
   const [isGrabbed, setIsGrabbed] = useState(false);
 
@@ -158,6 +160,10 @@ const ListProto = ({
     console.log("[Schedule List] Outer Updated", outerData);
     setInternalData(outerData);
   }, [outerData]);
+
+  useEffect(() => {
+    console.log("routeData", routeData);
+  }, [routeData]);
 
   return (
     <div
@@ -215,7 +221,17 @@ const ListProto = ({
               >
                 {!isGrabbed && (
                   <>
-                    <BiCar /> 14km · 5분
+                    {routeData?.[i - 1] && (
+                      <>
+                        <BiCar />
+                        {(routeData[i - 1].distance / 1000).toFixed(1)}km · {(routeData[i - 1].duration / 60 / 60).toFixed(1)}시간
+                      </>
+                    )}
+                    {!routeData?.[i - 1] && (
+                      <>
+                        --.-km · --.-시간
+                      </>
+                    )}
                   </>
                 )}
               </div>
