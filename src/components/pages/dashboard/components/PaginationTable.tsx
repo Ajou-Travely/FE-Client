@@ -15,7 +15,6 @@ import {
   Paper,
   TableBody,
   TablePagination,
-  Button,
 } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -151,7 +150,7 @@ const PaginationTable = ({ url, kps }) => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+    <div style={{ display: "flex", justifyContent: "center" }}>
       <TableContainer
         component={Paper}
         style={{ width: "90%", marginTop: "20px" }}
@@ -196,9 +195,6 @@ const PaginationTable = ({ url, kps }) => {
           </TableFooter>
         </Table>
       </TableContainer>
-      <div style={{ margin: "10px 0px", width: "90%", display: "flex", justifyContent:"end" }}>
-        <Button variant="contained">생성하기</Button>
-      </div>
     </div>
   );
 };
