@@ -9,6 +9,9 @@ interface IDateData {
   scheduleOrders: number[];
   schedules: IScheduleResponse[];
 }
+interface AmountPerUserProps {
+  [key: number]: number;
+}
 
 export interface ITravelResponse {
   id: number;
