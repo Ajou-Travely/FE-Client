@@ -34,6 +34,8 @@ import Modal from "@src/components/modal";
 import CreateTravelModal from "@pages/dashboard/CreateTravelModal";
 import travelApi from "@src/app/api/travelApi";
 import TextAvatar from "@src/components/atoms/textAvatar";
+import NoticeDetail from "../admin/pages/detail/NoticeDetail";
+import EventDetail from "../admin/pages/detail/EventDetail";
 
 const LLink = styled(Link)`
   text-decoration: none;
@@ -144,11 +146,11 @@ const SideBar = () => {
           <BiGridAlt size={24} style={{ marginRight: 12 }} />
           피드
         </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/notice">
+        <SideBarMenu toPath="/dashboard/notices">
           <BiBookAlt size={24} style={{ marginRight: 12 }} />
           공지사항
         </SideBarMenu>
-        <SideBarMenu toPath="/dashboard/event">
+        <SideBarMenu toPath="/dashboard/events">
           <BiBell size={24} style={{ marginRight: 12 }} />
           이벤트
         </SideBarMenu>
@@ -291,13 +293,23 @@ const dashboardRoute: BreadcrumbsRoute<string>[] = [
         breadcrumb: "피드",
       },
       {
-        path: "notice",
+        path: "notices",
         element: <NoticePage />,
         breadcrumb: "공지사항",
       },
       {
-        path: "event",
+        path: "notices/:noticeId",
+        element: <NoticeDetail />,
+        breadcrumb: "공지사항",
+      },
+      {
+        path: "events",
         element: <EventPage />,
+        breadcrumb: "이벤트",
+      },
+      {
+        path: "events/:eventId",
+        element: <EventDetail />,
         breadcrumb: "이벤트",
       },
     ],
