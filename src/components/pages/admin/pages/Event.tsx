@@ -1,4 +1,4 @@
-import { TableCell, IconButton } from "@material-ui/core";
+import { TableCell, Button } from "@material-ui/core";
 import styled from "@emotion/styled";
 import PaginationTable from "../components/PaginationTable";
 
@@ -24,8 +24,30 @@ const Event = () => {
         <TableCell align="center">{rowData.authorName}</TableCell>
       ),
     },
+    {
+      title: "상세 페이지",
+      gen: (rowData: any) => (
+        <TableCell align="center">
+          <a href={`/admin/events/${rowData.eventId}`}>
+            상세 보기
+          </a>
+        </TableCell>
+      ),
+    },
   ];
-  return <PaginationTable url={url} kps={kps}></PaginationTable>;
+  return (
+    <PaginationTable url={url} kps={kps}>
+      <div style={{ display: "flex", justifyContent: "right", width: "90%" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginTop: "10px" }}
+        >
+          생성하기
+        </Button>
+      </div>
+    </PaginationTable>
+  );
 };
 
 export default Event;

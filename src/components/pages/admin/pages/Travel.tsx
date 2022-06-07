@@ -1,6 +1,5 @@
-import { TableCell, IconButton } from "@material-ui/core";
+import { TableCell, Button } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { Delete, Edit } from "@material-ui/icons";
 import PaginationTable from "../components/PaginationTable";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -13,7 +12,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Travel = () => {
   const url = "https://api.dev.travely.guide/v1/admin/travels";
-  const classes = useStyles();
   const kps: { title: string; gen: (rowData: any) => React.ReactNode }[] = [
     {
       title: "ID",
@@ -46,7 +44,19 @@ const Travel = () => {
       ),
     },
   ];
-  return <PaginationTable url={url} kps={kps}></PaginationTable>;
+  return (
+    <PaginationTable url={url} kps={kps}>
+      <div style={{ display: "flex", justifyContent: "right", width: "90%" }}>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginTop: "10px" }}
+        >
+          생성하기
+        </Button>
+      </div>
+    </PaginationTable>
+  );
 };
 
 export default Travel;
