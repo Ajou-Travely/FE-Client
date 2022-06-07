@@ -1,6 +1,7 @@
-import { TableCell } from "@material-ui/core";
+import { IconButton, TableCell } from "@material-ui/core";
 import styled from "@emotion/styled";
 import PaginationTable from "../components/PaginationTable";
+import { Delete, Edit } from "@material-ui/icons";
 
 const Img = styled.div<{ img: string }>`
   width: 30px;
@@ -19,9 +20,7 @@ const User = () => {
     {
       title: "ID",
       gen: (rowData: any) => (
-        <TableCell align="center">
-          {rowData.userId}
-        </TableCell>
+        <TableCell align="center">{rowData.userId}</TableCell>
       ),
     },
     {
