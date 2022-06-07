@@ -17,6 +17,17 @@ import SelectBiller from "@src/components/organisms/settlementForm/selectBiller"
 import AddPrice from "@src/components/organisms/settlementForm/addPrice";
 import { api } from "@src/app/api/api";
 
+interface UserCost {
+  amount: number;
+  isRequested: boolean;
+  simpleUserInfoDto: {
+    profilePath: string;
+    userId: number;
+    userName: string;
+  };
+  userCostId: number;
+}
+
 interface IUser {
   userId: number;
   userName: string;
@@ -26,12 +37,23 @@ interface IUser {
 const AddCostModal = ({
   travelId,
   isClose,
+  users,
+  costData,
 }: {
   travelId: string | undefined;
+  users: any;
+  costData?: {
+    costId: string;
+    title: string;
+    content: string;
+    totalAmount: number;
+    userCosts: UserCost[];
+    payerId: number;
+  };
   isClose?: () => void;
 }) => {
-  const { data: users } = api.useGetUsersQuery(travelId!);
   const [createCost] = api.useCreateCostMutation();
+  const [updateCost] = api.useUpdateCostMutation();
   const [memo, setMemo] = useState("");
   const [title, setTitle] = useState("");
   const [payer, setPayer] = useState<IUser | null>(null);
@@ -45,16 +67,68 @@ const AddCostModal = ({
     title !== "" && setCountChip(Math.min(3, countChip + 1));
 
   useEffect(() => {
-    console.log(usersPrice);
-  }, [usersPrice]);
+    if (costData === undefined) return;
+    setTitle(costData.title);
+    setMemo(costData.content);
+    const { userId, userName, profilePath } = users.filter(
+      ({ userId }) => costData.payerId === userId
+    )[0];
+    setPayer({ userId, userName, profilePath });
+    setPrice(costData.totalAmount);
+    setSelectedUser({
+      ...users.reduce((r, { userId }) => {
+        r[userId] = false;
+        return r;
+      }, {}),
+      ...{
+        ...costData.userCosts.reduce((r, { simpleUserInfoDto: { userId } }) => {
+          r[userId] = true;
+          return r;
+        }, {}),
+        [costData.payerId as number]: true,
+      },
+    });
+    setUsersPrice(
+      costData.userCosts.reduce(
+        (r, { simpleUserInfoDto: { userId }, amount }) => {
+          r[userId] = amount;
+          return r;
+        },
+        {}
+      )
+    );
+    setCountChip(3);
+  }, []);
+
+  useEffect(() => {
+    console.log(selectedUser, usersPrice);
+  }, [selectedUser, usersPrice]);
 
   const compareUserPrice =
     Number(price) ==
     Object.values(usersPrice).reduce((r: number, v) => r + Number(v), 0);
+
   const goNextPage = () => {
     if (price !== undefined && +price > 0 && compareUserPrice) {
       {
         createCost({
+          amountsPerUser: usersPrice as any,
+          title: title,
+          content: memo,
+          payerId: payer?.userId as number,
+          totalAmount: price as number,
+          travelId: travelId as string,
+        });
+        isClose !== undefined && isClose();
+      }
+    } else alert("금액이 맞지 않습니다.");
+  };
+
+  const handleUpdate = () => {
+    if (price !== undefined && +price > 0 && compareUserPrice) {
+      {
+        updateCost({
+          costId: costData?.costId!,
           amountsPerUser: usersPrice as any,
           title: title,
           content: memo,
@@ -94,6 +168,7 @@ const AddCostModal = ({
           )}
           {countChip === 2 && (
             <SelectBiller
+              isUpdate={costData === undefined ? false : true}
               payer={payer}
               users={users!}
               selectedUser={selectedUser}
@@ -102,6 +177,7 @@ const AddCostModal = ({
           )}
           {countChip === 3 && (
             <AddPrice
+              isUpdate={costData === undefined ? false : true}
               price={price}
               setPrice={setPrice}
               users={users!}
@@ -114,7 +190,11 @@ const AddCostModal = ({
         <Footer direction="row">
           {countChip !== 0 && <Button onClick={handlePast}>이전</Button>}
           {countChip == 3 ? (
-            <Button onClick={goNextPage}>생성</Button>
+            costData === undefined ? (
+              <Button onClick={goNextPage}>생성</Button>
+            ) : (
+              <Button onClick={handleUpdate}>수정</Button>
+            )
           ) : (
             <Button onClick={handleNext}>다음</Button>
           )}
