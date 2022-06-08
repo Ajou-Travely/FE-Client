@@ -472,7 +472,7 @@ function FriendsPage() {
                             `}
                           >
                             <p>{userName}</p>
-                            <p>{userId}</p>
+                            <p>{email}</p>
                           </div>
                         </div>
                         <p
